@@ -24,26 +24,26 @@ public class Command
 
    @NonNull
    @Column(nullable = false)
-   private CommandType commandType;
+   private CommandType type;
 
    @Nullable
    private String arguments;
 
-   public Command(@NotNull CommandType commandType)
+   public Command(@NotNull CommandType type)
    {
-      this.commandType = requireNonNull(commandType, "commandType");
+      this.type = requireNonNull(type, "type");
 
-      if (commandType.isArgumentsRequired()) {
-         throw new IllegalStateException("Arguments are required for command of type " + commandType.name());
+      if (type.isArgumentsRequired()) {
+         throw new IllegalStateException("Arguments are required for command of type " + type.name());
       }
    }
 
-   public Command(@NotNull CommandType commandType, @NotNull String arguments)
+   public Command(@NotNull CommandType type, @NotNull String arguments)
    {
-      this.commandType = requireNonNull(commandType, "commandType");
+      this.type = requireNonNull(type, "type");
 
       if (requireNonNull(arguments, "arguments").isEmpty()) {
-         throw new IllegalStateException("Arguments are required for command of type " + commandType.name());
+         throw new IllegalStateException("Arguments are required for command of type " + type.name());
       }
 
       this.arguments = arguments;
