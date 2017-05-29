@@ -1,0 +1,25 @@
+app:
+  secret: YOUR_SECRET
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/tracker
+    username: tracker
+    password: tracker
+  jpa:
+    show-sql: false
+    database: postgresql
+    hibernate:
+      ddl-auto: update
+      naming:
+        strategy: org.springframework.boot.orm.jpa.hibernate.SpringNamingStrategy
+  jmx:
+    enabled: false
+
+server:
+  port: 8000
+  compression:
+    enabled: true
+  ssl:
+    enabled: false
