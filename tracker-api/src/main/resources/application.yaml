@@ -14,6 +14,11 @@ spring:
       ddl-auto: update
       naming:
         strategy: org.springframework.boot.orm.jpa.hibernate.SpringNamingStrategy
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL94Dialect
+        jdbc.use_get_generated_keys: true
+        temp.use_jdbc_metadata_defaults: false
   jmx:
     enabled: false
 
