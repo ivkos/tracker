@@ -1,15 +1,13 @@
 package com.ivkos.tracker.core.models.command;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import com.ivkos.tracker.core.models.device.Device;
+import lombok.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.requireNonNull;
@@ -19,8 +17,21 @@ import static java.util.Objects.requireNonNull;
 @Getter
 public class Command
 {
+   @Id
+   @GeneratedValue
+   @NonNull
+   private UUID id;
+
    @Column(updatable = false)
    private LocalDateTime dateIssued = now();
+
+   @Nullable
+   @Setter
+   private LocalDateTime dateReceived;
+
+   @ManyToOne(optional = false)
+   @NonNull
+   private Device device;
 
    @NonNull
    @Column(nullable = false)
@@ -29,8 +40,9 @@ public class Command
    @Nullable
    private String arguments;
 
-   public Command(@NotNull CommandType type)
+   public Command(@NotNull Device device, @NotNull CommandType type)
    {
+      this.device = requireNonNull(device, "device");
       this.type = requireNonNull(type, "type");
 
       if (type.isArgumentsRequired()) {
@@ -38,8 +50,9 @@ public class Command
       }
    }
 
-   public Command(@NotNull CommandType type, @NotNull String arguments)
+   public Command(@NotNull Device device, @NotNull CommandType type, @NotNull String arguments)
    {
+      this.device = requireNonNull(device, "device");
       this.type = requireNonNull(type, "type");
 
       if (requireNonNull(arguments, "arguments").isEmpty()) {
