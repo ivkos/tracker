@@ -15,6 +15,8 @@ import static java.util.Objects.requireNonNull;
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 @Getter
+@Entity
+@Table(name = "devices")
 public class Command
 {
    @Id
