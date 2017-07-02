@@ -5,16 +5,23 @@ import lombok.*;
 import javax.persistence.Embeddable;
 
 import static java.lang.Math.*;
+import static java.lang.String.format;
 
 @Getter
 @EqualsAndHashCode
+@RequiredArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 @Embeddable
 public class Location
 {
-   private double latitude;
-   private double longitude;
+   @NonNull
+   private Double latitude;
+
+   @NonNull
+   private Double longitude;
+
+   private Double altitude;
 
    public double distanceTo(Location otherLocation)
    {
@@ -38,5 +45,22 @@ public class Location
       double c = 2 * atan2(sqrt(a), sqrt(1 - a));
 
       return R * c * 1000;
+   }
+
+   @Override
+   public String toString()
+   {
+      char verticalDirection = latitude <= 0 ? 'S' : 'N';
+      char horizontalDirection = longitude <= 0 ? 'W' : 'E';
+
+      String result = format("%f° %s / %f° %s",
+            latitude, verticalDirection,
+            longitude, horizontalDirection);
+
+      if (altitude != null) {
+         result += format(" / %.2f m", altitude);
+      }
+
+      return result;
    }
 }
