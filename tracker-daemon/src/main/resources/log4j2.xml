@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <!--<File name="File" fileName="tracker-daemon.log" append="false">-->
+            <!--<PatternLayout pattern="%d %-5level [%thread] %logger{1.} - %msg%n"/>-->
+        <!--</File>-->
+
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d %highlight{%-5level} [%thread] %logger{1.} - %msg%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <!--<Logger name="FileLogger" level="warn">-->
+            <!--<AppenderRef ref="File"/>-->
+        <!--</Logger>-->
+
+        <Root level="info">
+            <AppenderRef ref="STDOUT"/>
+        </Root>
+    </Loggers>
+</Configuration>
