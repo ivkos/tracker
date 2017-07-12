@@ -9,14 +9,13 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.ivkos.tracker.daemon</groupId>
     <artifactId>tracker-daemon</artifactId>
 
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
-            <groupId>com.ivkos.tracker.core</groupId>
+            <groupId>com.ivkos.tracker</groupId>
             <artifactId>tracker-core</artifactId>
             <version>${project.version}</version>
         </dependency>
