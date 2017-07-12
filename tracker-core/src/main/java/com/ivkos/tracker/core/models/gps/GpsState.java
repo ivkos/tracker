@@ -74,11 +74,13 @@ public class GpsState
             sb.append(lineSeparator());
          }
 
-         sb.append(format(
-               "Precision: Lat ±%.2f m / Lon ±%.2f m / Alt ±%.2f m",
-               errLat, errLon, errAlt
-         ));
-         sb.append(lineSeparator());
+         if (errLat != null && errLon != null && errAlt != null) {
+            sb.append(format(
+                  "Precision: Lat ±%.2f m / Lon ±%.2f m / Alt ±%.2f m",
+                  errLat, errLon, errAlt
+            ));
+            sb.append(lineSeparator());
+         }
 
          if (speed != null) {
             sb.append(format("Speed: %.0f m/s", speed));
