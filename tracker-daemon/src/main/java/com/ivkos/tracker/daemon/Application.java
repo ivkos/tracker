@@ -1,8 +1,8 @@
 package com.ivkos.tracker.daemon;
 
 import com.google.gson.Gson;
+import com.ivkos.gpsd4j.client.GpsdClient;
 import com.ivkos.tracker.daemon.gps.GpsStatePeriodicReporter;
-import com.ivkos.tracker.daemon.gps.GpsdClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
