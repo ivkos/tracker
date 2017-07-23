@@ -30,7 +30,7 @@
         <dependency>
             <groupId>com.ivkos</groupId>
             <artifactId>gpsd4j</artifactId>
-            <version>1.2.0</version>
+            <version>1.2.1</version>
         </dependency>
 
         <!--region log4j -->
@@ -58,6 +58,17 @@
         </dependency>
     </dependencies>
 
+    <dependencyManagement>
+        <!-- This fixes conflicts between guice's guava and reflections' one -->
+        <dependencies>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>20.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <build>
         <plugins>
             <plugin>
@@ -65,15 +76,6 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.0.0</version>
                 <configuration>
-                    <minimizeJar>true</minimizeJar>
-                    <filters>
-                        <filter>
-                            <artifact>org.apache.logging.log4j:log4j*</artifact>
-                            <includes>
-                                <include>**</include>
-                            </includes>
-                        </filter>
-                    </filters>
                     <shadedArtifactAttached>true</shadedArtifactAttached>
                     <shadedClassifierName>jar-with-dependencies</shadedClassifierName>
                     <createDependencyReducedPom>false</createDependencyReducedPom>
