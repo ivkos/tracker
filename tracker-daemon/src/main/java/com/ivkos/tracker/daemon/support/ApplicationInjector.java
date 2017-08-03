@@ -22,8 +22,7 @@ public class ApplicationInjector
 
             new LoggingModule(),
             new ApplicationConfigurationModule("application.properties"),
-            new GpsModule(),
-            new GsonModule()
+            new GpsModule()
       );
 
       logger.info("Injector created successfully");

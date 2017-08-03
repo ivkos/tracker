@@ -1,13 +1,15 @@
 package com.ivkos.tracker.daemon;
 
-import com.google.gson.Gson;
 import com.ivkos.gpsd4j.client.GpsdClient;
 import com.ivkos.tracker.daemon.gps.GpsStatePeriodicReporter;
+import io.vertx.core.json.Json;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.time.LocalDateTime;
 
 import static com.ivkos.tracker.daemon.support.ApplicationInjector.getInjector;
@@ -19,22 +21,24 @@ public class Application
 
    public static void main(String[] args) throws Throwable
    {
-      logger.info("Application started");
+      RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
+      long jvmStartupTime = bean.getUptime();
 
-      logger.info("Starting state updater daemon...");
-      getInjector().getInstance(GpsdClient.class).start();
+      GpsdClient client = getInjector().getInstance(GpsdClient.class);
 
-      logger.info("Starting stdout reporter...");
+      long appStartupTime = bean.getUptime();
+      logger.info("Application started in {} ms (JVM: {} ms + App: {} ms)",
+            appStartupTime, jvmStartupTime, appStartupTime - jvmStartupTime);
+
+      client.start();
+
       createStdoutReporter(1000).start();
-
-      logger.info("Starting json reporter...");
       createJsonFileReporter(5000).start();
    }
 
    private static GpsStatePeriodicReporter createJsonFileReporter(int interval)
    {
       GpsStatePeriodicReporter jsonReporter = getInjector().getInstance(GpsStatePeriodicReporter.class);
-      Gson gson = getInjector().getInstance(Gson.class);
       jsonReporter.setInterval(interval);
 
       jsonReporter.setAction(gpsState -> {
@@ -52,7 +56,7 @@ public class Application
 
             gpsState.lockRead();
             try {
-               json = gson.toJson(gpsState);
+               json = Json.mapper.writeValueAsString(gpsState);
             } finally {
                gpsState.unlockRead();
             }

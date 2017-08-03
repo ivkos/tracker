@@ -17,7 +17,7 @@ public class GpsModule extends AbstractModule
    protected void configure()
    {
       bind(GpsState.class).in(SINGLETON);
-      bind(GpsdMessageHandler.class).in(SINGLETON);
+      bind(GpsdMessageHandler.class).asEagerSingleton();
    }
 
    @Provides
