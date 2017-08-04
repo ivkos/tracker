@@ -2,6 +2,7 @@ package com.ivkos.tracker.api.device;
 
 import com.ivkos.tracker.core.models.device.Device;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,8 +36,15 @@ class DeviceController
    }
 
    @GetMapping("/uuid-of/{hardwareId}")
-   HttpEntity getUuidForHardwareId(@PathVariable long hardwareId)
+   HttpEntity getUuidForHardwareId(@PathVariable long hardwareId,
+                                   @RequestHeader("X-Api-Secret") String apiSecretHeader,
+                                   @Value("${app.secret}") String apiSecret)
    {
+      if (!apiSecret.equals(apiSecretHeader)) {
+         // TODO Throw more concrete exception
+         throw new RuntimeException("Incorrect API secret");
+      }
+
       return ok(service.getDeviceDefinitionByHardwareId(hardwareId));
    }
 

@@ -1,5 +1,5 @@
 app:
-  secret: YOUR_SECRET
+  secret: THE_API_SECRET_GOES_HERE
 
 spring:
   datasource:
