@@ -16,7 +16,7 @@ import java.util.List;
 
 import static java.time.ZoneOffset.UTC;
 
-class GpsdMessageHandler
+class GlobalGpsStateUpdater
 {
    private final GlobalGpsState state;
    private final GpsdClient client;
@@ -25,7 +25,7 @@ class GpsdMessageHandler
    private Logger logger;
 
    @Inject
-   GpsdMessageHandler(GlobalGpsState state, GpsdClient client)
+   GlobalGpsStateUpdater(GlobalGpsState state, GpsdClient client)
    {
       this.state = state;
       this.client = client;

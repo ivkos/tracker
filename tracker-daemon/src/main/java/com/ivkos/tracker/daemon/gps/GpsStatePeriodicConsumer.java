@@ -5,25 +5,25 @@ import com.ivkos.tracker.core.models.gps.GpsState;
 
 import java.util.function.Consumer;
 
-public class GpsStatePeriodicReporter extends Thread
+public class GpsStatePeriodicConsumer extends Thread
 {
    public static final long DEFAULT_INTERVAL = 1000;
 
    private final GlobalGpsState globalGpsState;
    private long interval = DEFAULT_INTERVAL;
 
-   private Consumer<GpsState> gpsStateConsumer;
+   private Consumer<GpsState> consumer;
 
    @Inject
-   GpsStatePeriodicReporter(GlobalGpsState globalGpsState)
+   GpsStatePeriodicConsumer(GlobalGpsState globalGpsState)
    {
-      super(GpsStatePeriodicReporter.class.getSimpleName());
+      super(GpsStatePeriodicConsumer.class.getSimpleName());
       this.globalGpsState = globalGpsState;
    }
 
    public void setAction(Consumer<GpsState> gpsStateConsumer)
    {
-      this.gpsStateConsumer = gpsStateConsumer;
+      this.consumer = gpsStateConsumer;
    }
 
    public long getInterval()
@@ -43,8 +43,8 @@ public class GpsStatePeriodicReporter extends Thread
       long localInterval = interval;
 
       while (!this.isInterrupted()) {
-         if (gpsStateConsumer != null) {
-            gpsStateConsumer.accept(globalGpsState.copy());
+         if (consumer != null) {
+            consumer.accept(globalGpsState.copy());
          }
 
          try {

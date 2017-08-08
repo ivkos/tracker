@@ -1,7 +1,7 @@
 package com.ivkos.tracker.daemon;
 
 import com.ivkos.gpsd4j.client.GpsdClient;
-import com.ivkos.tracker.daemon.gps.GpsStatePeriodicReporter;
+import com.ivkos.tracker.daemon.gps.GpsStatePeriodicConsumer;
 import io.vertx.core.json.Json;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,9 +35,9 @@ public class Application
       createJsonFileReporter(5000).start();
    }
 
-   private static GpsStatePeriodicReporter createJsonFileReporter(int interval)
+   private static GpsStatePeriodicConsumer createJsonFileReporter(int interval)
    {
-      GpsStatePeriodicReporter jsonReporter = getInjector().getInstance(GpsStatePeriodicReporter.class);
+      GpsStatePeriodicConsumer jsonReporter = getInjector().getInstance(GpsStatePeriodicConsumer.class);
       jsonReporter.setInterval(interval);
 
       jsonReporter.setAction(gpsState -> {
@@ -56,9 +56,9 @@ public class Application
       return jsonReporter;
    }
 
-   private static GpsStatePeriodicReporter createStdoutReporter(int interval)
+   private static GpsStatePeriodicConsumer createStdoutReporter(int interval)
    {
-      GpsStatePeriodicReporter stdoutReporter = getInjector().getInstance(GpsStatePeriodicReporter.class);
+      GpsStatePeriodicConsumer stdoutReporter = getInjector().getInstance(GpsStatePeriodicConsumer.class);
       stdoutReporter.setInterval(interval);
       stdoutReporter.setAction(gpsState -> System.out.printf("%s\n---\n", gpsState));
 
