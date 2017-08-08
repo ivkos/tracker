@@ -10,7 +10,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
-import java.time.LocalDateTime;
 
 import static com.ivkos.tracker.daemon.support.ApplicationInjector.getInjector;
 import static java.lang.System.lineSeparator;
@@ -42,28 +41,13 @@ public class Application
       jsonReporter.setInterval(interval);
 
       jsonReporter.setAction(gpsState -> {
-         gpsState.lockRead();
-         try {
-            if (!gpsState.isDataAvailable()) return;
-         } finally {
-            gpsState.unlockRead();
-         }
+         if (!gpsState.isDataAvailable()) return;
 
-         try {
-            FileWriter fileWriter = new FileWriter("gps.json", true);
-
-            String json;
-
-            gpsState.lockRead();
-            try {
-               json = Json.mapper.writeValueAsString(gpsState);
-            } finally {
-               gpsState.unlockRead();
-            }
+         try (FileWriter fileWriter = new FileWriter("gps.json", true)) {
+            String json = Json.mapper.writeValueAsString(gpsState);
 
             fileWriter.append(json);
             fileWriter.append(lineSeparator());
-            fileWriter.close();
          } catch (IOException e) {
             logger.error("Error while writing to json file", e);
          }
@@ -76,13 +60,7 @@ public class Application
    {
       GpsStatePeriodicReporter stdoutReporter = getInjector().getInstance(GpsStatePeriodicReporter.class);
       stdoutReporter.setInterval(interval);
-
-      stdoutReporter.setAction(gpsState -> {
-         System.out.printf("Local time: %s\n%s\n---\n",
-               LocalDateTime.now(),
-               gpsState
-         );
-      });
+      stdoutReporter.setAction(gpsState -> System.out.printf("%s\n---\n", gpsState));
 
       return stdoutReporter;
    }

@@ -7,23 +7,25 @@ import com.ivkos.gpsd4j.messages.enums.NMEAMode;
 import com.ivkos.gpsd4j.messages.reports.SKYReport;
 import com.ivkos.gpsd4j.messages.reports.TPVReport;
 import com.ivkos.tracker.core.models.gps.GpsFixMode;
-import com.ivkos.tracker.core.models.gps.GpsState;
 import com.ivkos.tracker.core.models.location.Location;
 import com.ivkos.tracker.daemon.support.logging.InjectLogger;
 import org.apache.logging.log4j.Logger;
 
+import java.time.ZonedDateTime;
 import java.util.List;
+
+import static java.time.ZoneOffset.UTC;
 
 class GpsdMessageHandler
 {
-   private final GpsState state;
+   private final GlobalGpsState state;
    private final GpsdClient client;
 
    @InjectLogger
    private Logger logger;
 
    @Inject
-   GpsdMessageHandler(GpsState state, GpsdClient client)
+   GpsdMessageHandler(GlobalGpsState state, GpsdClient client)
    {
       this.state = state;
       this.client = client;
@@ -36,8 +38,9 @@ class GpsdMessageHandler
    {
       state.lockWrite();
       try {
+         state.setLastUpdatedTime(ZonedDateTime.now());
          state.setFixMode(toGpsFixMode(tpv.getMode()));
-         state.setSatelliteTime(tpv.getTime());
+         state.setSatelliteTime(tpv.getTime().atZone(UTC));
 
          {
             Double lat = tpv.getLatitude();
@@ -70,6 +73,7 @@ class GpsdMessageHandler
 
       state.lockWrite();
       try {
+         state.setLastUpdatedTime(ZonedDateTime.now());
          state.setSatelliteCount(satelliteCount);
       } finally {
          state.unlockWrite();

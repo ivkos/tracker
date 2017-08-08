@@ -7,7 +7,6 @@ import com.google.inject.name.Named;
 import com.ivkos.gpsd4j.client.GpsdClient;
 import com.ivkos.gpsd4j.client.GpsdClientOptions;
 import com.ivkos.gpsd4j.messages.DeviceMessage;
-import com.ivkos.tracker.core.models.gps.GpsState;
 
 import static com.google.inject.Scopes.SINGLETON;
 
@@ -16,7 +15,7 @@ public class GpsModule extends AbstractModule
    @Override
    protected void configure()
    {
-      bind(GpsState.class).in(SINGLETON);
+      bind(GlobalGpsState.class).in(SINGLETON);
       bind(GpsdMessageHandler.class).asEagerSingleton();
    }
 

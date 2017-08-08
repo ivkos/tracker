@@ -9,16 +9,16 @@ public class GpsStatePeriodicReporter extends Thread
 {
    public static final long DEFAULT_INTERVAL = 1000;
 
-   private final GpsState state;
+   private final GlobalGpsState globalGpsState;
    private long interval = DEFAULT_INTERVAL;
 
    private Consumer<GpsState> gpsStateConsumer;
 
    @Inject
-   GpsStatePeriodicReporter(GpsState state)
+   GpsStatePeriodicReporter(GlobalGpsState globalGpsState)
    {
       super(GpsStatePeriodicReporter.class.getSimpleName());
-      this.state = state;
+      this.globalGpsState = globalGpsState;
    }
 
    public void setAction(Consumer<GpsState> gpsStateConsumer)
@@ -44,7 +44,7 @@ public class GpsStatePeriodicReporter extends Thread
 
       while (!this.isInterrupted()) {
          if (gpsStateConsumer != null) {
-            gpsStateConsumer.accept(state);
+            gpsStateConsumer.accept(globalGpsState.copy());
          }
 
          try {
