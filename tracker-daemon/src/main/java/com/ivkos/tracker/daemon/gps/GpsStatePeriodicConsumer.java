@@ -19,6 +19,8 @@ public class GpsStatePeriodicConsumer extends Thread
    {
       super(GpsStatePeriodicConsumer.class.getSimpleName());
       this.globalGpsState = globalGpsState;
+
+      this.setDaemon(true);
    }
 
    public void setAction(Consumer<GpsState> gpsStateConsumer)
