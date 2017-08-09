@@ -37,5 +37,7 @@ class ApplicationConfigurationModule extends AbstractModule
       }
 
       Names.bindProperties(binder(), props);
+
+      bind(DeviceDefinitionManager.class).asEagerSingleton();
    }
 }
