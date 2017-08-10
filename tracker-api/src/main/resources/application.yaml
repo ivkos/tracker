@@ -21,6 +21,9 @@ spring:
         temp.use_jdbc_metadata_defaults: false
   jmx:
     enabled: false
+  jackson:
+    serialization:
+      write_dates_as_timestamps: true
 
 server:
   port: 8000
