@@ -24,6 +24,7 @@ spring:
   jackson:
     serialization:
       write_dates_as_timestamps: true
+    default-property-inclusion: non_null
 
 server:
   port: 8000
