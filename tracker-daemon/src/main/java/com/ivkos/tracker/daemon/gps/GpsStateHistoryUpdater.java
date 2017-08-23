@@ -8,14 +8,17 @@ public class GpsStateHistoryUpdater
 {
    private final GpsStateHistoryHolder holder;
    private final GpsStatePeriodicConsumer consumer;
+   private final GpsStateHistoryFileManager fileManager;
 
    @Inject
    public GpsStateHistoryUpdater(GpsStateHistoryHolder holder,
                                  GpsStatePeriodicConsumer consumer,
+                                 GpsStateHistoryFileManager fileManager,
                                  @Named("daemon.gpsStateHistoryUpdateInterval") int historyInterval)
    {
       this.holder = holder;
       this.consumer = consumer;
+      this.fileManager = fileManager;
 
       this.consumer.setInterval(historyInterval);
       this.consumer.setAction(this::storeGpsState);
@@ -28,5 +31,6 @@ public class GpsStateHistoryUpdater
       if (!state.isFixAvailable()) return;
 
       holder.add(state);
+      fileManager.write(state);
    }
 }
