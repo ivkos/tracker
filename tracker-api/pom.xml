@@ -91,5 +91,20 @@
                 </executions>
             </plugin>
         </plugins>
+
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh-external</artifactId>
+                <version>3.0.0</version>
+            </extension>
+        </extensions>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>tracker-api</id>
+            <url>scpexe://tracker.ivkos.com/home/tracker</url>
+        </repository>
+    </distributionManagement>
 </project>
