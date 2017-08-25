@@ -38,7 +38,7 @@ Wants=network-online.target
 After=network-online.target postgresql.service
 [Service]
 WorkingDirectory=/home/${TRACKER_USERNAME}
-ExecStart=/usr/bin/java -jar /home/${TRACKER_USERNAME}/tracker-api-1.0.0.jar
+ExecStart=/usr/bin/java -jar /home/${TRACKER_USERNAME}/com/ivkos/tracker/tracker-api/1.0.0/tracker-api-1.0.0.jar
 Type=simple
 User=${TRACKER_USERNAME}
 Restart=on-failure
