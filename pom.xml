@@ -10,11 +10,40 @@
 
     <packaging>pom</packaging>
 
-    <modules>
-        <module>tracker-core</module>
-        <module>tracker-api</module>
-        <module>tracker-daemon</module>
-    </modules>
+    <profiles>
+        <profile>
+            <id>everything</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>tracker-core</module>
+                <module>tracker-api</module>
+                <module>tracker-daemon</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>only-api</id>
+            <modules>
+                <module>tracker-core</module>
+                <module>tracker-api</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>only-daemon</id>
+            <modules>
+                <module>tracker-core</module>
+                <module>tracker-daemon</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>nothing</id>
+            <modules></modules>
+        </profile>
+    </profiles>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
