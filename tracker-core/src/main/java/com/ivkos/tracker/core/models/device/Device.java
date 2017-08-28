@@ -12,6 +12,7 @@ import java.util.UUID;
 
 import static java.lang.Long.parseUnsignedLong;
 import static java.time.LocalDateTime.now;
+import static java.util.UUID.nameUUIDFromBytes;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
@@ -19,6 +20,8 @@ import static java.time.LocalDateTime.now;
 @Getter
 public class Device
 {
+   public static final Device ANONYMOUS = new Device(nameUUIDFromBytes(new byte[] { 0 }), 0L);
+
    @Id
    @NonNull
    private UUID id;

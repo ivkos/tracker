@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-class DeviceService
+public class DeviceService
 {
    private final DeviceRepository repository;
    private final DeviceVerifier verifier;
@@ -30,6 +30,11 @@ class DeviceService
    public Device findById(UUID id)
    {
       return repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Device not found"));
+   }
+
+   public boolean isRegistered(UUID id)
+   {
+      return repository.findById(id).isPresent();
    }
 
    public Device register(Device device)
