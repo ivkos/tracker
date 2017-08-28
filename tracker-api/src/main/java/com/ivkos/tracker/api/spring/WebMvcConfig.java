@@ -1,4 +1,4 @@
-package com.ivkos.tracker.api.config;
+package com.ivkos.tracker.api.spring;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
