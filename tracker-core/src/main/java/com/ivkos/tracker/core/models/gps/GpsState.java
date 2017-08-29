@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import java.time.ZonedDateTime;
 
 import static java.lang.String.format;
@@ -15,11 +17,13 @@ import static java.lang.System.lineSeparator;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode
+@Embeddable
 public class GpsState
 {
    private ZonedDateTime lastUpdatedTime;
    private ZonedDateTime satelliteTime;
 
+   @Embedded
    private Location location;
    private Double errLat, errLon, errAlt;
 

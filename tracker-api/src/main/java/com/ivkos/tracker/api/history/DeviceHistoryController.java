@@ -1,10 +1,10 @@
-package com.ivkos.tracker.api.location;
+package com.ivkos.tracker.api.history;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/location")
-class DeviceLocationController
+@RequestMapping("/history")
+class DeviceHistoryController
 {
 }
