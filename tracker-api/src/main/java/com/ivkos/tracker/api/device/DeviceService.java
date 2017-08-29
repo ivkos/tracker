@@ -9,6 +9,8 @@ import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
+import static java.time.LocalDateTime.now;
+
 @Service
 public class DeviceService
 {
@@ -57,5 +59,11 @@ public class DeviceService
    {
       UUID uuid = verifier.calculateUuidForHardwareId(hardwareId);
       return new Device(uuid, hardwareId);
+   }
+
+   public Device updateLastSeen(Device device)
+   {
+      device.setLastSeen(now());
+      return repository.save(device);
    }
 }

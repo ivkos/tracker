@@ -90,6 +90,8 @@ public class DeviceAuthenticationFilter extends GenericFilterBean
             } else {
                device = service.findById(id);
             }
+
+            device = service.updateLastSeen(device);
          } else {
             device = service.findById(id);
          }
