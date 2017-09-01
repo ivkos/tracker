@@ -1,5 +1,6 @@
 package com.ivkos.tracker.api.history;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ivkos.tracker.core.models.device.Device;
 import com.ivkos.tracker.core.models.gps.GpsState;
 import lombok.AccessLevel;
@@ -26,6 +27,7 @@ public class DeviceGpsState
    private ZonedDateTime dateCreated = now();
 
    @ManyToOne
+   @JsonIgnore
    private Device device;
 
    @Embedded
