@@ -9,7 +9,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
-import static java.time.ZonedDateTime.now;
+import static java.time.OffsetDateTime.now;
 
 @Service
 class CommandService

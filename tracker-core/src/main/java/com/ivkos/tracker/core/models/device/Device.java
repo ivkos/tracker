@@ -7,11 +7,11 @@ import org.jetbrains.annotations.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import static java.lang.Long.parseUnsignedLong;
-import static java.time.ZonedDateTime.now;
+import static java.time.OffsetDateTime.now;
 import static java.util.UUID.nameUUIDFromBytes;
 
 @Entity
@@ -31,11 +31,11 @@ public class Device
    private Long hardwareId;
 
    @Column(updatable = false)
-   private ZonedDateTime dateCreated = now();
+   private OffsetDateTime dateCreated = now();
 
    @Setter
    @Nullable
-   private ZonedDateTime lastSeen;
+   private OffsetDateTime lastSeen;
 
    public Device(UUID id, String hardwareId)
    {

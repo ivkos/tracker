@@ -11,9 +11,9 @@ import com.ivkos.tracker.core.models.location.Location;
 import com.ivkos.tracker.daemon.support.logging.InjectLogger;
 import org.apache.logging.log4j.Logger;
 
-import java.time.ZonedDateTime;
 import java.util.List;
 
+import static java.time.OffsetDateTime.now;
 import static java.time.ZoneOffset.UTC;
 
 class GlobalGpsStateUpdater
@@ -38,9 +38,12 @@ class GlobalGpsStateUpdater
    {
       state.lockWrite();
       try {
-         state.setLastUpdatedTime(ZonedDateTime.now());
+         state.setLastUpdatedTime(now());
          state.setFixMode(toGpsFixMode(tpv.getMode()));
-         state.setSatelliteTime(tpv.getTime().atZone(UTC));
+
+         if (tpv.getTime() != null) {
+            state.setSatelliteTime(tpv.getTime().atOffset(UTC));
+         }
 
          {
             Double lat = tpv.getLatitude();
@@ -73,7 +76,7 @@ class GlobalGpsStateUpdater
 
       state.lockWrite();
       try {
-         state.setLastUpdatedTime(ZonedDateTime.now());
+         state.setLastUpdatedTime(now());
          state.setSatelliteCount(satelliteCount);
       } finally {
          state.unlockWrite();

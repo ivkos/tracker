@@ -2,7 +2,7 @@ package com.ivkos.tracker.daemon.gps;
 
 import com.ivkos.tracker.core.models.gps.GpsState;
 
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Set;
@@ -32,15 +32,15 @@ public class GpsStateHistoryHolder
       @Override
       public int compare(GpsState o1, GpsState o2)
       {
-         ZonedDateTime state1SatTime = o1.getSatelliteTime();
-         ZonedDateTime state2SatTime = o2.getSatelliteTime();
+         OffsetDateTime state1SatTime = o1.getSatelliteTime();
+         OffsetDateTime state2SatTime = o2.getSatelliteTime();
 
          if (state1SatTime != null && state2SatTime != null) {
             return state1SatTime.compareTo(state2SatTime);
          }
 
-         ZonedDateTime state1LastUpdatedTime = o1.getLastUpdatedTime();
-         ZonedDateTime state2LastUpdatedTime = o2.getLastUpdatedTime();
+         OffsetDateTime state1LastUpdatedTime = o1.getLastUpdatedTime();
+         OffsetDateTime state2LastUpdatedTime = o2.getLastUpdatedTime();
 
          if (state1LastUpdatedTime != null && state2LastUpdatedTime != null) {
             return state1LastUpdatedTime.compareTo(state2LastUpdatedTime);

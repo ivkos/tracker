@@ -8,7 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
@@ -20,8 +20,8 @@ import static java.lang.System.lineSeparator;
 @Embeddable
 public class GpsState
 {
-   private ZonedDateTime lastUpdatedTime;
-   private ZonedDateTime satelliteTime;
+   private OffsetDateTime lastUpdatedTime;
+   private OffsetDateTime satelliteTime;
 
    @Embedded
    private Location location;

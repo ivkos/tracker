@@ -8,10 +8,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
-import static java.time.ZonedDateTime.now;
+import static java.time.OffsetDateTime.now;
 
 @Entity
 @Table(name = "gps_state")
@@ -24,7 +24,7 @@ public class DeviceGpsState
    private UUID id;
 
    @Column(updatable = false)
-   private ZonedDateTime dateCreated = now();
+   private OffsetDateTime dateCreated = now();
 
    @ManyToOne
    @JsonIgnore

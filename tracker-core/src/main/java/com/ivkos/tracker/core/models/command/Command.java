@@ -6,10 +6,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.*;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
-import static java.time.ZonedDateTime.now;
+import static java.time.OffsetDateTime.now;
 import static java.util.Objects.requireNonNull;
 
 @Embeddable
@@ -24,11 +24,11 @@ public class Command
    private UUID id;
 
    @Column(updatable = false)
-   private ZonedDateTime dateIssued = now();
+   private OffsetDateTime dateIssued = now();
 
    @Nullable
    @Setter
-   private ZonedDateTime dateReceived;
+   private OffsetDateTime dateReceived;
 
    @ManyToOne(optional = false)
    @NonNull
