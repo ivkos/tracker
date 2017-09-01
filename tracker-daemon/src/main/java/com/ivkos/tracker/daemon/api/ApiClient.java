@@ -4,9 +4,12 @@ import com.google.inject.Inject;
 import com.ivkos.tracker.core.constants.ApiEndpoints;
 import com.ivkos.tracker.core.constants.ApiHeaders;
 import com.ivkos.tracker.core.models.device.Device;
+import com.ivkos.tracker.core.models.gps.GpsState;
+import com.ivkos.tracker.daemon.gps.GpsStateHistoryHolder;
 import com.ivkos.tracker.daemon.support.DeviceDefinitionManager;
 import com.ivkos.tracker.daemon.support.logging.InjectLogger;
 import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.json.JsonObject;
@@ -16,23 +19,34 @@ import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.codec.BodyCodec;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Collection;
+
 public class ApiClient
 {
    private final WebClient client;
    private final DeviceDefinitionManager deviceDefinitionManager;
+   private final GpsStateHistoryHolder historyHolder;
+
    @InjectLogger
    private Logger logger;
 
    @Inject
-   public ApiClient(WebClient client, DeviceDefinitionManager deviceDefinitionManager)
+   public ApiClient(WebClient client, DeviceDefinitionManager deviceDefinitionManager, GpsStateHistoryHolder
+         historyHolder)
    {
       this.client = client;
       this.deviceDefinitionManager = deviceDefinitionManager;
+      this.historyHolder = historyHolder;
    }
 
    public void sendHeartbeat()
    {
       post(ApiEndpoints.HEARTBEAT).send(this::noop);
+   }
+
+   public void sendHistory(Collection<GpsState> history, Handler<AsyncResult<HttpResponse<JsonObject>>> handler)
+   {
+      put(ApiEndpoints.HISTORY).sendJson(history, handler);
    }
 
    public HttpRequest<JsonObject> get(String url)

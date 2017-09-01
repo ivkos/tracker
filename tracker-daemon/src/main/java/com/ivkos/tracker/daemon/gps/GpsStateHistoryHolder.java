@@ -2,48 +2,51 @@ package com.ivkos.tracker.daemon.gps;
 
 import com.ivkos.tracker.core.models.gps.GpsState;
 
+import java.time.ZonedDateTime;
 import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.Comparator;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 public class GpsStateHistoryHolder
 {
-   private final BlockingDeque<GpsState> history = new LinkedBlockingDeque<>();
-   private final ReadWriteLock lock = new ReentrantReadWriteLock();
+   private final ConcurrentSkipListSet<GpsState> history = new ConcurrentSkipListSet<>(new GpsStateComparator());
 
    public void add(GpsState state)
    {
-      lock.writeLock().lock();
-      try {
-         if (history.remainingCapacity() <= 0) {
-            history.pollLast();
+      history.add(state);
+   }
+
+   public Set<GpsState> getAll()
+   {
+      return Collections.unmodifiableSet(history);
+   }
+
+   public boolean removeAll(Set<GpsState> s)
+   {
+      return history.removeAll(s);
+   }
+
+   static class GpsStateComparator implements Comparator<GpsState>
+   {
+      @Override
+      public int compare(GpsState o1, GpsState o2)
+      {
+         ZonedDateTime state1SatTime = o1.getSatelliteTime();
+         ZonedDateTime state2SatTime = o2.getSatelliteTime();
+
+         if (state1SatTime != null && state2SatTime != null) {
+            return state1SatTime.compareTo(state2SatTime);
          }
 
-         history.add(state);
-      } finally {
-         lock.writeLock().unlock();
+         ZonedDateTime state1LastUpdatedTime = o1.getLastUpdatedTime();
+         ZonedDateTime state2LastUpdatedTime = o2.getLastUpdatedTime();
+
+         if (state1LastUpdatedTime != null && state2LastUpdatedTime != null) {
+            return state1LastUpdatedTime.compareTo(state2LastUpdatedTime);
+         }
+
+         return 0;
       }
-   }
-
-   public List<GpsState> drain(int maxElements)
-   {
-      List<GpsState> result = new LinkedList<>();
-
-      lock.writeLock().lock();
-      try {
-         history.drainTo(result, maxElements);
-         return Collections.unmodifiableList(result);
-      } finally {
-         lock.writeLock().unlock();
-      }
-   }
-
-   public List<GpsState> drain()
-   {
-      return this.drain(Integer.MAX_VALUE);
    }
 }

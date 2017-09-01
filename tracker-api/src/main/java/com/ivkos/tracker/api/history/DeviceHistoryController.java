@@ -2,7 +2,6 @@ package com.ivkos.tracker.api.history;
 
 import com.ivkos.tracker.core.models.device.Device;
 import com.ivkos.tracker.core.models.gps.GpsState;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -12,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,7 +46,7 @@ public class DeviceHistoryController
    }
 
    @PutMapping(HISTORY)
-   HttpEntity save(@RequestBody @Valid @NotEmpty GpsStateList states, @AuthenticationPrincipal Device device)
+   HttpEntity save(@RequestBody @Valid @NotNull Collection<GpsState> states, @AuthenticationPrincipal Device device)
    {
       List<DeviceGpsState> items = states.stream()
             .map(state -> new DeviceGpsState(device, state))
@@ -55,6 +56,4 @@ public class DeviceHistoryController
 
       return new ResponseEntity(HttpStatus.CREATED);
    }
-
-   interface GpsStateList extends List<GpsState> { }
 }
