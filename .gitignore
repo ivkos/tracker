@@ -71,3 +71,5 @@ buildNumber.properties
 .mvn/timing.properties
 !/.mvn/wrapper/maven-wrapper.jar
 /gps.json
+/device.json
+/log/
