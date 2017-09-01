@@ -16,28 +16,32 @@ public class GpsStateHistoryReporter
    private final Vertx vertx;
    private final ApiClient client;
 
-   private int interval;
+   private int historyReportInterval;
    private long currentTimerId;
 
    @InjectLogger
    private Logger logger;
 
    @Inject
-   GpsStateHistoryReporter(@Named("daemon.api.historyReportInterval") int interval,
+   GpsStateHistoryReporter(@Named("daemon.api.historyReportInterval") int historyReportInterval,
+                           @Named("daemon.gpsStateHistoryUpdateInterval") long gpsStateHistoryUpdateInterval,
                            GpsStateHistoryHolder historyHolder, Vertx vertx, ApiClient client)
    {
-      this.interval = interval;
+      this.historyReportInterval = historyReportInterval;
 
       this.historyHolder = historyHolder;
       this.vertx = vertx;
       this.client = client;
+
+      // This is done once so we send the server a location (if available) as soon as possible after launch
+      vertx.setTimer(gpsStateHistoryUpdateInterval + 1000, __ -> sendHistory());
 
       runTimer();
    }
 
    public void setInterval(int interval)
    {
-      this.interval = interval;
+      this.historyReportInterval = interval;
 
       vertx.cancelTimer(currentTimerId);
       runTimer();
@@ -45,7 +49,7 @@ public class GpsStateHistoryReporter
 
    private void runTimer()
    {
-      this.currentTimerId = vertx.setPeriodic(interval * 1000, __ -> sendHistory());
+      this.currentTimerId = vertx.setPeriodic(historyReportInterval * 1000, __ -> sendHistory());
    }
 
    private void sendHistory()
