@@ -14,13 +14,13 @@ public class GpsStateHistoryUpdater
    public GpsStateHistoryUpdater(GpsStateHistoryHolder holder,
                                  GpsStatePeriodicConsumer consumer,
                                  GpsStateHistoryFileManager fileManager,
-                                 @Named("daemon.gpsStateHistoryUpdateInterval") int historyInterval)
+                                 @Named("daemon.state.updateInterval") long gpsStateUpdateInterval)
    {
       this.holder = holder;
       this.consumer = consumer;
       this.fileManager = fileManager;
 
-      this.consumer.setInterval(historyInterval);
+      this.consumer.setInterval(gpsStateUpdateInterval);
       this.consumer.setAction(this::storeGpsState);
       this.consumer.start();
    }

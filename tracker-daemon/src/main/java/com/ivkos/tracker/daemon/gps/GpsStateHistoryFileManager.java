@@ -40,9 +40,9 @@ class GpsStateHistoryFileManager
    private Logger logger;
 
    @Inject
-   GpsStateHistoryFileManager(@Named("daemon.gpsStateHistoryDirectory") String gpsStateHistoryDirectory)
+   GpsStateHistoryFileManager(@Named("daemon.state.logDirectory") String logDirectory)
    {
-      File dir = new File(gpsStateHistoryDirectory);
+      File dir = new File(logDirectory);
 
       if (!dir.exists()) {
          dir.mkdirs();

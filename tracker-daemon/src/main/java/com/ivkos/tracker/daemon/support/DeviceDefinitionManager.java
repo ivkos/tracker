@@ -26,7 +26,7 @@ public class DeviceDefinitionManager
    private final Device device;
 
    @Inject
-   DeviceDefinitionManager(@Named("daemon.deviceDefinitionFilePath") String deviceDefinitionFilePath)
+   DeviceDefinitionManager(@Named("daemon.state.deviceDefinitionFilePath") String deviceDefinitionFilePath)
    {
       requireNonNull(deviceDefinitionFilePath, "deviceDefinitionFilePath must not be null");
 
