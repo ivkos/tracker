@@ -3,6 +3,7 @@ package com.ivkos.tracker.daemon.support;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
+import com.ivkos.tracker.daemon.api.ApiClientModule;
 import com.ivkos.tracker.daemon.gps.GpsModule;
 import com.ivkos.tracker.daemon.support.logging.LoggingModule;
 import org.apache.logging.log4j.LogManager;
@@ -22,7 +23,8 @@ public class ApplicationInjector
 
             new LoggingModule(),
             new ApplicationConfigurationModule("application.properties"),
-            new GpsModule()
+            new GpsModule(),
+            new ApiClientModule()
       );
 
       logger.info("Injector created successfully");
