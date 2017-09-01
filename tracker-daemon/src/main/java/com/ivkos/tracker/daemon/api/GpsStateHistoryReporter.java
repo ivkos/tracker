@@ -16,14 +16,14 @@ public class GpsStateHistoryReporter
    private final Vertx vertx;
    private final ApiClient client;
 
-   private int historyReportInterval;
+   private long historyReportInterval;
    private long currentTimerId;
 
    @InjectLogger
    private Logger logger;
 
    @Inject
-   GpsStateHistoryReporter(@Named("daemon.api.historyReportInterval") int historyReportInterval,
+   GpsStateHistoryReporter(@Named("daemon.api.historyReportInterval") long historyReportInterval,
                            @Named("daemon.gpsStateHistoryUpdateInterval") long gpsStateHistoryUpdateInterval,
                            GpsStateHistoryHolder historyHolder, Vertx vertx, ApiClient client)
    {
@@ -39,7 +39,7 @@ public class GpsStateHistoryReporter
       runTimer();
    }
 
-   public void setInterval(int interval)
+   public void setInterval(long interval)
    {
       this.historyReportInterval = interval;
 
@@ -49,7 +49,7 @@ public class GpsStateHistoryReporter
 
    private void runTimer()
    {
-      this.currentTimerId = vertx.setPeriodic(historyReportInterval * 1000, __ -> sendHistory());
+      this.currentTimerId = vertx.setPeriodic(historyReportInterval, __ -> sendHistory());
    }
 
    private void sendHistory()

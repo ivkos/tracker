@@ -7,12 +7,12 @@ import io.vertx.core.Vertx;
 class HeartbeatPinger
 {
    @Inject
-   HeartbeatPinger(@Named("daemon.api.heartbeatInterval") int heartbeatInterval, ApiClient client, Vertx vertx)
+   HeartbeatPinger(@Named("daemon.api.heartbeatInterval") long heartbeatInterval, ApiClient client, Vertx vertx)
    {
       client.sendHeartbeat();
 
       if (heartbeatInterval > 0) {
-         vertx.setPeriodic(heartbeatInterval * 1000, __ -> client.sendHeartbeat());
+         vertx.setPeriodic(heartbeatInterval, __ -> client.sendHeartbeat());
       }
    }
 }
