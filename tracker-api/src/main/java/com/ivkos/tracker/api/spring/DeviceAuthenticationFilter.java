@@ -20,14 +20,11 @@ import java.util.UUID;
 
 import static com.ivkos.tracker.api.spring.DeviceAuthentication.ADMIN;
 import static com.ivkos.tracker.api.spring.DeviceAuthentication.ANONYMOUS;
+import static com.ivkos.tracker.core.constants.ApiHeaders.*;
 
 @Component
 public class DeviceAuthenticationFilter extends GenericFilterBean
 {
-   public static final String HEADER_HARDWARE_ID = "X-Hardware-Id";
-   public static final String HEADER_DEVICE_ID = "X-Device-Id";
-   public static final String HEADER_API_SECRET = "X-Api-Secret";
-
    private final DeviceService service;
    private final DeviceVerifier verifier;
    private final String apiSecret;
@@ -46,9 +43,9 @@ public class DeviceAuthenticationFilter extends GenericFilterBean
    {
       HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-      String headerHardwareId = httpRequest.getHeader(HEADER_HARDWARE_ID);
-      String headerDeviceId = httpRequest.getHeader(HEADER_DEVICE_ID);
-      String headerApiSecret = httpRequest.getHeader(HEADER_API_SECRET);
+      String headerHardwareId = httpRequest.getHeader(HARDWARE_ID);
+      String headerDeviceId = httpRequest.getHeader(DEVICE_ID);
+      String headerApiSecret = httpRequest.getHeader(API_SECRET);
 
       boolean isAdmin = false;
       if (headerApiSecret != null) {

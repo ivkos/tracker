@@ -15,16 +15,14 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
+import static com.ivkos.tracker.core.constants.ApiEndpoints.HISTORY;
+import static com.ivkos.tracker.core.constants.ApiEndpoints.HISTORY_ID;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
-@RequestMapping(DeviceHistoryController.HISTORY)
 public class DeviceHistoryController
 {
-   public static final String HISTORY = "/history";
-   public static final String HISTORY_ID = "/{id}";
-
    private final DeviceHistoryRepository repository;
 
    @Autowired
@@ -33,7 +31,7 @@ public class DeviceHistoryController
       this.repository = repository;
    }
 
-   @GetMapping
+   @GetMapping(HISTORY)
    HttpEntity getAll(@AuthenticationPrincipal Device device)
    {
       return ok(repository.getAllByDeviceOrderByDateCreatedDesc(device));
@@ -46,7 +44,7 @@ public class DeviceHistoryController
             .orElseThrow(() -> new EntityNotFoundException("No such state")));
    }
 
-   @PutMapping
+   @PutMapping(HISTORY)
    HttpEntity save(@RequestBody @Valid @NotEmpty GpsStateList states, @AuthenticationPrincipal Device device)
    {
       List<DeviceGpsState> items = states.stream()

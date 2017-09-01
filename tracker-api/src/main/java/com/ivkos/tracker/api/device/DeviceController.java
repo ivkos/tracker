@@ -8,17 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.UUID;
 
-import static com.ivkos.tracker.api.device.DeviceController.DEVICES;
+import static com.ivkos.tracker.core.constants.ApiEndpoints.*;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
-@RequestMapping(DEVICES)
 public class DeviceController
 {
-   public static final String DEVICES = "/devices";
-   public static final String DEVICES_UUID_OF_HARDWAREID = "/uuid-of/{hardwareId}";
-   public static final String DEVICES_UUID = "/{uuid}";
-
    private final DeviceService service;
 
    @Autowired
@@ -27,25 +22,25 @@ public class DeviceController
       this.service = service;
    }
 
-   @GetMapping
+   @GetMapping(DEVICES)
    HttpEntity findAll()
    {
       return ok(service.findAll());
    }
 
-   @PostMapping
+   @PostMapping(DEVICES)
    HttpEntity registerDevice(@RequestBody @Valid Device device)
    {
       return ok(service.register(device));
    }
 
-   @GetMapping(DEVICES_UUID)
+   @GetMapping(DEVICES_ID)
    HttpEntity findById(@PathVariable UUID uuid)
    {
       return ok(service.findById(uuid));
    }
 
-   @GetMapping(DEVICES_UUID_OF_HARDWAREID)
+   @GetMapping(DEVICES_UUID_OF_HARDWARE_ID)
    HttpEntity getUuidForHardwareId(@PathVariable long hardwareId)
    {
       return ok(service.getDeviceDefinitionByHardwareId(hardwareId));
