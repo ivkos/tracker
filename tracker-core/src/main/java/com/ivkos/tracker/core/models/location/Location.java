@@ -9,9 +9,6 @@ import static java.lang.String.format;
 
 @Getter
 @EqualsAndHashCode
-@RequiredArgsConstructor
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
 @Embeddable
 public class Location
 {
@@ -22,6 +19,21 @@ public class Location
    private Double longitude;
 
    private Double altitude;
+
+   Location() { }
+
+   public Location(Double latitude, Double longitude)
+   {
+      this.latitude = latitude;
+      this.longitude = longitude;
+   }
+
+   public Location(Double latitude, Double longitude, Double altitude)
+   {
+      this.latitude = latitude;
+      this.longitude = longitude;
+      this.altitude = altitude;
+   }
 
    public double distanceTo(Location otherLocation)
    {
