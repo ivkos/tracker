@@ -1,49 +1,39 @@
 package com.ivkos.tracker.core.models.command;
 
-import com.ivkos.tracker.core.models.device.Device;
-import lombok.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import static java.time.OffsetDateTime.now;
 import static java.util.Objects.requireNonNull;
 
-@Embeddable
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 @Getter
-@Entity
+@Embeddable
 public class Command
 {
-   @Id
-   @GeneratedValue
-   @NonNull
+   @Column(insertable = false, updatable = false)
    private UUID id;
 
    @Column(updatable = false)
    private OffsetDateTime dateIssued = now();
 
-   @Nullable
    @Setter
    private OffsetDateTime dateReceived;
 
-   @ManyToOne(optional = false)
-   @NonNull
-   private Device device;
-
-   @NonNull
    @Column(nullable = false)
    private CommandType type;
 
-   @Nullable
    private String arguments;
 
-   public Command(@NotNull Device device, @NotNull CommandType type)
+   public Command(CommandType type)
    {
-      this.device = requireNonNull(device, "device");
       this.type = requireNonNull(type, "type");
 
       if (type.isArgumentsRequired()) {
@@ -51,9 +41,8 @@ public class Command
       }
    }
 
-   public Command(@NotNull Device device, @NotNull CommandType type, @NotNull String arguments)
+   public Command(CommandType type, String arguments)
    {
-      this.device = requireNonNull(device, "device");
       this.type = requireNonNull(type, "type");
 
       if (requireNonNull(arguments, "arguments").isEmpty()) {
