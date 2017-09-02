@@ -27,7 +27,7 @@ public class Application
 
       client.start();
 
-      createStdoutReporter(1000).start();
+      createStdoutReporter(1000);
    }
 
    private static GpsStatePeriodicConsumer createStdoutReporter(int interval)
