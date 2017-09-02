@@ -29,6 +29,9 @@ TRACKER_USERNAME=tracker
 useradd -m -U ${TRACKER_USERNAME}
 chmod 775 /home/${TRACKER_USERNAME}
 
+echo "${TRACKER_USERNAME} ALL=(ALL) NOPASSWD: /bin/systemctl poweroff,/bin/systemctl halt,/bin/systemctl reboot" \
+    >> /etc/sudoers
+
 sudo -u tracker \
     curl \
     -f -s \

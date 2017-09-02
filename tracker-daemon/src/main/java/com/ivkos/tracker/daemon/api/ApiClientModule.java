@@ -16,7 +16,7 @@ public class ApiClientModule extends AbstractModule
    {
       bind(ApiClient.class).in(Scopes.SINGLETON);
 
-      bind(HeartbeatPinger.class).asEagerSingleton();
+      bind(CommandExecutor.class).asEagerSingleton();
       bind(GpsStateHistoryReporter.class).asEagerSingleton();
    }
 

@@ -34,7 +34,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 
       http
             .authorizeRequests()
-            .antMatchers(POST, HEARTBEAT).hasAuthority(Roles.DEVICE)
+
+            .antMatchers(GET, COMMANDS).hasAuthority(Roles.DEVICE)
+            .antMatchers(PUT, COMMANDS).hasAuthority(Roles.CLIENT)
+            .antMatchers(GET, COMMANDS_ID).hasAuthority(Roles.CLIENT)
+            .antMatchers(PATCH, COMMANDS_ID).hasAuthority(Roles.DEVICE)
 
             .antMatchers(GET, DEVICES).hasAuthority(Roles.ADMIN)
             .antMatchers(POST, DEVICES).hasAuthority(Roles.ADMIN)

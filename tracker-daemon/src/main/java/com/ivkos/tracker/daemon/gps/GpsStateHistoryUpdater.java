@@ -33,4 +33,9 @@ public class GpsStateHistoryUpdater
       holder.add(state);
       fileManager.write(state);
    }
+
+   public void setInterval(long interval)
+   {
+      this.consumer.setInterval(interval);
+   }
 }
