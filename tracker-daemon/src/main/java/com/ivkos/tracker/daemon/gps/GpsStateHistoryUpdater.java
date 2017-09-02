@@ -22,7 +22,6 @@ public class GpsStateHistoryUpdater
 
       this.consumer.setInterval(gpsStateUpdateInterval);
       this.consumer.setAction(this::storeGpsState);
-      this.consumer.start();
    }
 
    public void storeGpsState(GpsState state)

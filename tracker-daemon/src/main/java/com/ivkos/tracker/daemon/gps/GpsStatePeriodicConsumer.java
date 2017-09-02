@@ -2,25 +2,39 @@ package com.ivkos.tracker.daemon.gps;
 
 import com.google.inject.Inject;
 import com.ivkos.tracker.core.models.gps.GpsState;
+import com.ivkos.tracker.daemon.support.logging.InjectLogger;
+import io.vertx.core.Vertx;
+import org.apache.logging.log4j.Logger;
 
 import java.util.function.Consumer;
 
-public class GpsStatePeriodicConsumer extends Thread
+public class GpsStatePeriodicConsumer
 {
    public static final long DEFAULT_INTERVAL = 1000;
 
    private final GlobalGpsState globalGpsState;
+   private final Vertx vertx;
+
+   @InjectLogger
+   private Logger logger;
+
    private long interval = DEFAULT_INTERVAL;
+   private long currentTimerId;
 
    private Consumer<GpsState> consumer;
 
    @Inject
-   GpsStatePeriodicConsumer(GlobalGpsState globalGpsState)
+   GpsStatePeriodicConsumer(GlobalGpsState globalGpsState, Vertx vertx)
    {
-      super(GpsStatePeriodicConsumer.class.getSimpleName());
       this.globalGpsState = globalGpsState;
+      this.vertx = vertx;
 
-      this.setDaemon(true);
+      this.runTimer();
+   }
+
+   private void runTimer()
+   {
+      this.currentTimerId = vertx.setPeriodic(interval, __ -> doWork());
    }
 
    public void setAction(Consumer<GpsState> gpsStateConsumer)
@@ -28,37 +42,33 @@ public class GpsStatePeriodicConsumer extends Thread
       this.consumer = gpsStateConsumer;
    }
 
-   public long getInterval()
-   {
-      return interval;
-   }
-
    public void setInterval(long interval)
    {
       this.interval = interval;
-      this.interrupt();
+
+      vertx.cancelTimer(currentTimerId);
+      runTimer();
    }
 
-   @Override
-   public void run()
+   private void doWork()
    {
-      long localInterval = interval;
+      if (consumer == null) return;
 
-      while (!this.isInterrupted()) {
-         if (consumer != null) {
-            consumer.accept(globalGpsState.copy());
-         }
+      vertx.executeBlocking(
+            future -> {
+               try {
+                  consumer.accept(globalGpsState.copy());
+                  future.complete();
+               } catch (Throwable t) {
+                  future.fail(t);
+               }
+            },
 
-         try {
-            Thread.sleep(localInterval);
-         } catch (InterruptedException e) {
-            // handle interval changes
-            if (interval != localInterval) {
-               localInterval = interval;
-            } else {
-               break;
+            result -> {
+               if (result.failed()) {
+                  logger.error(GpsStatePeriodicConsumer.class.getSimpleName() + " failed", result.cause());
+               }
             }
-         }
-      }
+      );
    }
 }
