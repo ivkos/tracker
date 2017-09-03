@@ -29,6 +29,14 @@ public class GpsStateComparator implements Comparator<GpsState>
       return 0;
    }
 
+   public static OffsetDateTime getTimeOfGpsState(GpsState state)
+   {
+      OffsetDateTime satTime = state.getSatelliteTime();
+      OffsetDateTime updTime = state.getLastUpdatedTime();
+
+      return satTime != null ? satTime : updTime;
+   }
+
    public static GpsStateComparator getInstance()
    {
       if (instance == null) {
