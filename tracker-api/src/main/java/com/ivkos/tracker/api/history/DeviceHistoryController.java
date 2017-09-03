@@ -9,51 +9,59 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.time.OffsetDateTime;
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
-import static com.ivkos.tracker.core.constants.ApiEndpoints.HISTORY;
-import static com.ivkos.tracker.core.constants.ApiEndpoints.HISTORY_ID;
-import static java.util.stream.Collectors.toList;
+import static com.ivkos.tracker.core.constants.ApiEndpoints.*;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 public class DeviceHistoryController
 {
-   private final DeviceHistoryRepository repository;
+   private final DeviceHistoryService service;
 
    @Autowired
-   DeviceHistoryController(DeviceHistoryRepository repository)
+   DeviceHistoryController(DeviceHistoryService service)
    {
-      this.repository = repository;
+      this.service = service;
    }
 
    @GetMapping(HISTORY)
    HttpEntity getAll(@AuthenticationPrincipal Device device)
    {
-      return ok(repository.getAllByDeviceOrderByDateCreatedDesc(device));
+      return ok(service.getHistoryByDevice(device));
+   }
+
+   @GetMapping(HISTORY_RANGES)
+   HttpEntity getAllInGroups(@AuthenticationPrincipal Device device)
+   {
+      return ok(service.getHistoryRanges(device));
+   }
+
+   @GetMapping(HISTORY_RANGES_FROM_TO)
+   HttpEntity getHistoryInRange(@AuthenticationPrincipal Device device,
+                                @PathVariable("from") String fromVar,
+                                @PathVariable("to") String toVar)
+   {
+      OffsetDateTime from = OffsetDateTime.parse(fromVar);
+      OffsetDateTime to = OffsetDateTime.parse(toVar);
+
+      return ok(service.getHistoryInRange(device, from, to));
    }
 
    @GetMapping(HISTORY_ID)
    HttpEntity getById(@PathVariable UUID id, @AuthenticationPrincipal Device device)
    {
-      return ok(repository.findOneByIdAndDevice(id, device)
-            .orElseThrow(() -> new EntityNotFoundException("No such state")));
+      return ok(service.getByIdAndDevice(id, device));
    }
 
    @PutMapping(HISTORY)
    HttpEntity save(@RequestBody @Valid @NotNull Collection<GpsState> states, @AuthenticationPrincipal Device device)
    {
-      List<DeviceGpsState> items = states.stream()
-            .map(state -> new DeviceGpsState(device, state))
-            .collect(toList());
-
-      repository.save(items);
-
+      service.save(states, device);
       return new ResponseEntity(HttpStatus.CREATED);
    }
 }

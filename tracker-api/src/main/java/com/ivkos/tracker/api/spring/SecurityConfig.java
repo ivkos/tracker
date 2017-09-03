@@ -47,6 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
             .antMatchers(GET, HISTORY).hasAuthority(Roles.CLIENT)
             .antMatchers(GET, HISTORY_ID).hasAuthority(Roles.CLIENT)
             .antMatchers(PUT, HISTORY).hasAuthority(Roles.DEVICE)
+            .antMatchers(GET, HISTORY_RANGES).hasAuthority(Roles.CLIENT)
+            .antMatchers(GET, HISTORY_RANGES_FROM_TO).hasAuthority(Roles.CLIENT)
 
             .anyRequest().authenticated()
             .and()
