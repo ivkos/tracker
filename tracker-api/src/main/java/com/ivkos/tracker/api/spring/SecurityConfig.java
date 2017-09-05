@@ -40,7 +40,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
             .antMatchers(GET, COMMANDS_ID).hasAuthority(Roles.CLIENT)
             .antMatchers(PATCH, COMMANDS_ID).hasAuthority(Roles.DEVICE)
 
-            .antMatchers(GET, DEVICES).hasAuthority(Roles.ADMIN)
             .antMatchers(POST, DEVICES).hasAuthority(Roles.ADMIN)
             .antMatchers(GET, DEVICES_UUID_OF_HARDWARE_ID).hasAuthority(Roles.ADMIN)
 

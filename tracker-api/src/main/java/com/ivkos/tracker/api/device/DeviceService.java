@@ -66,4 +66,13 @@ public class DeviceService
       device.setLastSeen(now());
       return repository.save(device);
    }
+
+   public Device patchDevice(UUID deviceId, Device newDevice)
+   {
+      Device currentDevice = findById(deviceId);
+
+      currentDevice.setName(newDevice.getName());
+
+      return currentDevice;
+   }
 }

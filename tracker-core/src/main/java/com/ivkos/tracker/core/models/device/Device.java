@@ -16,7 +16,6 @@ import static java.util.UUID.nameUUIDFromBytes;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-@RequiredArgsConstructor
 @Getter
 public class Device
 {
@@ -30,6 +29,9 @@ public class Device
    @NonNull
    private Long hardwareId;
 
+   @Setter
+   private String name;
+
    @Column(updatable = false)
    private OffsetDateTime dateCreated = now();
 
@@ -40,5 +42,11 @@ public class Device
    public Device(UUID id, String hardwareId)
    {
       this(id, parseUnsignedLong(hardwareId, 16));
+   }
+
+   public Device(UUID id, long hardwareId)
+   {
+      this.id = id;
+      this.hardwareId = hardwareId;
    }
 }

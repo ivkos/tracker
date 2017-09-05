@@ -35,9 +35,15 @@ public class DeviceController
    }
 
    @GetMapping(DEVICES_ID)
-   HttpEntity findById(@PathVariable UUID uuid)
+   HttpEntity findById(@PathVariable UUID id)
    {
-      return ok(service.findById(uuid));
+      return ok(service.findById(id));
+   }
+
+   @PatchMapping(DEVICES_ID)
+   HttpEntity patchDevice(@PathVariable UUID id, @RequestBody Device deviceInBody)
+   {
+      return ok(service.patchDevice(id, deviceInBody));
    }
 
    @GetMapping(DEVICES_UUID_OF_HARDWARE_ID)
