@@ -1,8 +1,10 @@
 package com.ivkos.tracker.api.spring;
 
+import com.ivkos.tracker.core.constants.ApiHeaders;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @Configuration
@@ -15,5 +17,18 @@ class WebMvcConfig extends WebMvcConfigurerAdapter
       configurer.favorPathExtension(false);
       configurer.ignoreAcceptHeader(true);
       configurer.useJaf(false);
+   }
+
+   @Override
+   public void addCorsMappings(CorsRegistry registry)
+   {
+      registry.addMapping("/**")
+            .allowedOrigins("*")
+            .allowedMethods("*")
+            .allowedHeaders(
+                  ApiHeaders.DEVICE_ID,
+                  ApiHeaders.API_SECRET,
+                  ApiHeaders.HARDWARE_ID
+            );
    }
 }
