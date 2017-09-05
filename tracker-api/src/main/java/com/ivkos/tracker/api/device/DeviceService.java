@@ -72,6 +72,7 @@ public class DeviceService
       Device currentDevice = findById(deviceId);
 
       currentDevice.setName(newDevice.getName());
+      repository.save(currentDevice);
 
       return currentDevice;
    }
