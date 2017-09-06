@@ -2,6 +2,7 @@
   <div class="device-choice">
     <b-container>
       <b-jumbotron to="/"
+                   bg-variant="dark" text-variant="light" border-variant="dark"
                    header="GPS Tracker"
                    lead="Система за сигурност с GPS проследяване за автомобил"></b-jumbotron>
     </b-container>
