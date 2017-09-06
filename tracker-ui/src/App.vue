@@ -34,6 +34,6 @@
   }
 
   #main-container {
-    padding-top: 25px;
+    padding-top: 1em;
   }
 </style>
