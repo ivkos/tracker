@@ -8,6 +8,7 @@ public final class ApiEndpoints
 
    public static final String HISTORY = "/history";
    public static final String HISTORY_ID = HISTORY + "/{id}";
+   public static final String HISTORY_LATEST = HISTORY + "/latest";
    public static final String HISTORY_RANGES = HISTORY + "/ranges";
    public static final String HISTORY_RANGES_FROM_TO = HISTORY_RANGES + "/from/{from}/to/{to}";
 

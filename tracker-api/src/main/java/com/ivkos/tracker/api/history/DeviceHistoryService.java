@@ -36,6 +36,13 @@ class DeviceHistoryService
             .collect(toList());
    }
 
+   public GpsState getLatestLocationByDevice(Device device)
+   {
+      return repository.findFirstByDeviceOrderByStateSatelliteTimeDesc(device)
+            .orElseThrow(() -> new EntityNotFoundException("No history"))
+            .getState();
+   }
+
    public List<GpsStateRange> getHistoryRanges(Device device)
    {
       List<GpsState> fullHistory = repository.getAllByDeviceOrderByStateSatelliteTimeAsc(device)

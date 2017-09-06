@@ -20,5 +20,7 @@ interface DeviceHistoryRepository extends JpaRepository<DeviceGpsState, UUID>
          OffsetDateTime to
    );
 
+   Optional<DeviceGpsState> findFirstByDeviceOrderByStateSatelliteTimeDesc(Device device);
+
    Optional<DeviceGpsState> findOneByIdAndDevice(UUID id, Device device);
 }

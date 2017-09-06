@@ -35,6 +35,12 @@ public class DeviceHistoryController
       return ok(service.getHistoryByDevice(device));
    }
 
+   @GetMapping(HISTORY_LATEST)
+   HttpEntity getLatestLocation(@AuthenticationPrincipal Device device)
+   {
+      return ok(service.getLatestLocationByDevice(device));
+   }
+
    @GetMapping(HISTORY_RANGES)
    HttpEntity getAllInGroups(@AuthenticationPrincipal Device device)
    {
