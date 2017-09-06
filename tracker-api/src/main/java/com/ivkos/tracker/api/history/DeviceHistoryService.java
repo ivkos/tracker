@@ -3,16 +3,16 @@ package com.ivkos.tracker.api.history;
 import com.ivkos.tracker.core.models.device.Device;
 import com.ivkos.tracker.core.models.gps.GpsState;
 import com.ivkos.tracker.core.support.GpsStateComparator;
+import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.time.Duration;
 import java.time.OffsetDateTime;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Function;
 
 import static com.ivkos.tracker.core.support.GpsStateComparator.getTimeOfGpsState;
 import static java.util.stream.Collectors.toList;
@@ -43,38 +43,60 @@ class DeviceHistoryService
             .getState();
    }
 
+   @Transactional
    public List<GpsStateRange> getHistoryRanges(Device device)
    {
-      List<GpsState> fullHistory = repository.getAllByDeviceOrderByStateSatelliteTimeAsc(device)
-            .stream()
+      final GpsState[] pivot = { null };
+
+      List<GpsStateRange> ranges = repository.getAllByDeviceOrderByStateSatelliteTimeAsc(device)
             .map(DeviceGpsState::getState)
+            .map(new Function<GpsState, Pair<GpsState, GpsState>>()
+            {
+               GpsState prev;
+
+               @Override
+               public Pair<GpsState, GpsState> apply(GpsState state)
+               {
+                  Pair<GpsState, GpsState> pair = null;
+                  if (prev != null) pair = new Pair<>(prev, state);
+                  prev = state;
+                  return pair;
+               }
+            })
+            .skip(1) // skip first null
+            .map(x -> {
+               GpsState first = x.getKey();
+               GpsState second = x.getValue();
+
+               if (pivot[0] == null) pivot[0] = first;
+
+               OffsetDateTime firstTime = getTimeOfGpsState(first);
+               OffsetDateTime secondTime = getTimeOfGpsState(second);
+
+               if (Duration.between(firstTime, secondTime).toMinutes() >= 5) {
+                  GpsState pivotCopy = pivot[0];
+                  pivot[0] = second;
+
+                  return new GpsStateRange(
+                        getTimeOfGpsState(pivotCopy),
+                        firstTime
+                  );
+               } else {
+                  return null;
+               }
+            })
+            .filter(Objects::nonNull)
             .collect(toList());
 
-      List<GpsStateRange> ranges = new LinkedList<>();
-
-      GpsState pivot = null;
-      for (int i = 1; i < fullHistory.size(); i++) {
-         GpsState first = fullHistory.get(i - 1);
-         GpsState second = fullHistory.get(i);
-
-         if (pivot == null) pivot = first;
-
-         OffsetDateTime firstTime = getTimeOfGpsState(first);
-         OffsetDateTime secondTime = getTimeOfGpsState(second);
-
-         if (Duration.between(firstTime, secondTime).toMinutes() >= 5) {
-            ranges.add(new GpsStateRange(
-                  getTimeOfGpsState(pivot),
-                  firstTime
-            ));
-
-            pivot = second;
-         }
+      if (ranges.size() == 0) {
+         return Collections.emptyList();
       }
 
+      GpsState latest = getLatestLocationByDevice(device);
+
       ranges.add(new GpsStateRange(
-            getTimeOfGpsState(pivot),
-            getTimeOfGpsState(fullHistory.get(fullHistory.size() - 1))
+            getTimeOfGpsState(pivot[0]),
+            getTimeOfGpsState(latest)
       ));
 
       return ranges;

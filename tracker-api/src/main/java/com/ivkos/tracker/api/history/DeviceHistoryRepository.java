@@ -7,12 +7,13 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 interface DeviceHistoryRepository extends JpaRepository<DeviceGpsState, UUID>
 {
    List<DeviceGpsState> getAllByDeviceOrderByStateSatelliteTimeDesc(Device device);
 
-   List<DeviceGpsState> getAllByDeviceOrderByStateSatelliteTimeAsc(Device device);
+   Stream<DeviceGpsState> getAllByDeviceOrderByStateSatelliteTimeAsc(Device device);
 
    List<DeviceGpsState> getAllByDeviceAndStateSatelliteTimeGreaterThanEqualAndStateSatelliteTimeLessThanEqual(
          Device device,
