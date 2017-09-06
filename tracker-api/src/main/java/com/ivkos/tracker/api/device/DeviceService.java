@@ -26,7 +26,7 @@ public class DeviceService
 
    public List<Device> findAll()
    {
-      return repository.findAll();
+      return repository.findAllByOrderByDateCreatedAsc();
    }
 
    public Device findById(UUID id)
