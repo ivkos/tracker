@@ -63,7 +63,7 @@
         zoom: 5,
 
         carMarker: {},
-        followLocation: false,
+        followLocation: true,
         geolocationMarker: undefined,
 
         infoContent: '',
