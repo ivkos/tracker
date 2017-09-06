@@ -11,7 +11,7 @@
           <h5 v-else class="mb-1">{{device.name}}</h5>
 
           <small>
-            <span v-if="!concise">активно</span>
+            <span class="d-none d-sm-inline" v-if="!concise" >активно</span>
             <span :title="device.lastSeen | moment('LLLL')">{{device.lastSeen | moment("from") }}</span>
           </small>
         </div>
