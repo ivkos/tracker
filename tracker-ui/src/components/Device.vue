@@ -12,7 +12,7 @@
               <latest-location-map :device-id="$route.params.id"></latest-location-map>
             </b-tab>
 
-            <b-tab title="История">
+            <b-tab title="История" class="map-container">
               <history-map :device-id="$route.params.id"></history-map>
             </b-tab>
 
@@ -44,7 +44,7 @@
 
 <style scoped>
   .map-container {
-    height: 77vh;
+    height: 80vh;
     padding-bottom: 2em;
   }
 </style>

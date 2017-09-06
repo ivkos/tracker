@@ -185,8 +185,10 @@
 <style scoped>
   .latest-location-map, #map {
     height: 100%;
-    margin: 0;
-    padding: 0;
+    margin-bottom: -35px;
+
+    display: flex;
+    flex-direction: column;
   }
 
   strong.info-label {
