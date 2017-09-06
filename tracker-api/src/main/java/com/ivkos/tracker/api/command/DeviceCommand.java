@@ -11,7 +11,10 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "command")
+@Table(name = "command", indexes = {
+      @Index(columnList = "dateIssued"),
+      @Index(columnList = "dateReceived")
+})
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 @Getter
 public class DeviceCommand

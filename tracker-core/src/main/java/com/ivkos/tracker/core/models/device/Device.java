@@ -4,9 +4,7 @@ package com.ivkos.tracker.core.models.device;
 import lombok.*;
 import org.jetbrains.annotations.Nullable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -15,6 +13,10 @@ import static java.time.OffsetDateTime.now;
 import static java.util.UUID.nameUUIDFromBytes;
 
 @Entity
+@Table(name = "device", indexes = {
+      @Index(columnList = "dateCreated"),
+      @Index(columnList = "lastSeen")
+})
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 @Getter
 public class Device

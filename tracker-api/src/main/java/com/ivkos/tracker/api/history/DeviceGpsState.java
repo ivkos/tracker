@@ -14,7 +14,11 @@ import java.util.UUID;
 import static java.time.OffsetDateTime.now;
 
 @Entity
-@Table(name = "gps_state")
+@Table(name = "gps_state", indexes = {
+      @Index(columnList = "dateCreated"),
+      @Index(columnList = "lastUpdatedTime"),
+      @Index(columnList = "satelliteTime")
+})
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 @Getter
 public class DeviceGpsState
