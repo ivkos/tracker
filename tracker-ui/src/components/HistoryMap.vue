@@ -4,6 +4,46 @@
       <label class="form-control-label" for="rangeInput">Изберете период:</label>
       <b-form-select v-model="selectedRange" :options="ranges" id="rangeInput"></b-form-select>
     </div>
+
+    <gmap-map id="gmapHistory"
+              ref="gmapHistory"
+              :center="currentPosition"
+              :zoom="zoom">
+
+      <gmap-info-window v-if="infoCtx" :options="infoOptions" :position="infoWindowPos" :opened="infoWinOpen"
+                        @closeclick="infoWinOpen=false">
+        <strong class="info-label">Обновено {{infoCtx.rawState.satelliteTime | moment("from") }}</strong>.
+        <br>
+        <strong class="info-label">Време</strong>: {{infoCtx.rawState.satelliteTime | moment('LLLL')}}
+        <br><br>
+        <strong class="info-label">Координати</strong>:
+        {{infoCtx.rawState.location.latitude.toFixed(6)}},
+        {{infoCtx.rawState.location.longitude.toFixed(6)}}
+        <br>
+        <strong class="info-label">Височина</strong>:
+        {{infoCtx.rawState.location.altitude.toFixed(2)}} m
+        <br>
+        <strong class="info-label">Прецизност</strong>:
+        {{infoCtx.rawState.satelliteCount}} sat.,
+        Lat±{{infoCtx.rawState.errLat.toFixed(0)}} m,
+        Lon±{{infoCtx.rawState.errLon.toFixed(0)}} m,
+        Alt±{{infoCtx.rawState.errAlt.toFixed(0)}} m
+        <br><br>
+        <strong class="info-label">Скорост</strong>:
+        {{ (infoCtx.rawState.speed * 3.6).toFixed(2) }} km/h
+        <br>
+        <strong class="info-label">Курс</strong>:
+        {{ infoCtx.rawState.course.toFixed(2) }}&deg;
+      </gmap-info-window>
+
+      <gmap-circle v-if="infoWinOpen" :center="infoWindowPos"
+                   :radius="infoCtx.accuracy" :options="accuracyCircleOptions"></gmap-circle>
+
+      <gmap-polyline :path="points" :options="polylineOptions"></gmap-polyline>
+      <gmap-marker :key="i" v-for="(p,i) in points" :position="{lat: p.lat, lng: p.lng}"
+                   :icon="polylineMarkerIcon"
+                   :clickable="true" @click="toggleInfoWindow(p,i)"></gmap-marker>
+    </gmap-map>
   </div>
 </template>
 
@@ -18,11 +58,7 @@
     data () {
       return {
         selectedRange: null,
-        ranges: [{
-          value: null,
-          text: 'Зареждане...',
-          disabled: true
-        }],
+        ranges: [],
 
         currentPosition: {
           lat: 46.936742,
@@ -35,7 +71,7 @@
 
         geolocationMarker: undefined,
 
-        infoContent: '',
+        infoCtx: undefined,
         infoWindowPos: {
           lat: 0,
           lng: 0
@@ -45,16 +81,31 @@
         infoOptions: {
           pixelOffset: {
             width: 0,
-            height: -35
+            height: 0
           }
+        },
+        polylineOptions: {
+          clickable: false,
+          strokeColor: '#FF0000',
+          strokeOpacity: 1.0,
+          strokeWeight: 3
+        },
+        polylineMarkerIcon: {
+          url: 'https://maps.gstatic.com/intl/en_us/mapfiles/markers2/measle_blue.png',
+          size: {width: 7, height: 7},
+          anchor: {x: 4, y: 4}
+        },
+        accuracyCircleOptions: {
+          fillOpacity: 1 / 3,
+          strokeWeight: 1
         }
       }
     },
 
     methods: {
       toggleInfoWindow: function (marker, idx) {
-        this.infoWindowPos = marker.position
-        this.infoContent = marker.infoText
+        this.infoWindowPos = {lat: marker.lat, lng: marker.lng}
+        this.infoCtx = marker
 
         // check if its the same marker that was selected if yes toggle
         if (this.currentMidx === idx) {
@@ -67,6 +118,15 @@
       },
 
       getRanges: function () {
+        this.ranges = [
+          {
+            value: null,
+            text: 'Зареждане...',
+            disabled: true
+          }
+        ]
+        this.selectedRange = null
+
         this.$http.get('history/ranges', {
           headers: {
             'X-Device-Id': this.deviceId
@@ -74,19 +134,45 @@
         })
         .then(res => {
           this.ranges = res.data.map(range => ({
-            value: range,
-            text: `${moment(range.from).format('DD MMM HH:mm')} → ${moment(range.to).format('DD MMM HH:mm')}`
+            value: `${range.from}>>>${range.to}`,
+            text: `${moment(range.from).format('DD MMM HH:mm')} → ${moment(range.to)
+            .format('DD MMM HH:mm')} (${moment.duration(moment(range.from).diff(moment(range.to))).humanize()})`
           }))
 
           this.ranges.reverse()
 
           this.ranges.unshift({
             value: null,
-            text: 'Моля изберете',
+            text: (this.ranges.length > 0) ? 'Моля изберете' : 'Няма история',
             disabled: true
           })
-
         })
+      },
+
+      getHistory: function (from, to) {
+        this.$http.get(`history/ranges/from/${from}/to/${to}`, {
+          headers: {
+            'X-Device-Id': this.deviceId
+          }
+        })
+        .then(res => {
+          this.points = res.data.map(state => ({
+            lat: state.location.latitude,
+            lng: state.location.longitude,
+            accuracy: Math.max(state.errLat, state.errLon),
+            rawState: state
+          }))
+
+          const bounds = new google.maps.LatLngBounds()
+          this.points.forEach(p => bounds.extend(p))
+
+          const theMap = this.$refs.gmapHistory
+          theMap.fitBounds(bounds)
+        })
+      },
+
+      onPolylineClick: function (polyMouseEvent) {
+        console.log(polyMouseEvent)
       }
     },
 
@@ -96,51 +182,68 @@
 
     mounted: function () {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-          Vue.loadScript(
-            '/static/geolocation-marker.js')
+        setTimeout(() => {
+          Vue.loadScript('/static/geolocation-marker.js')
           .then(() => {
-            this.geolocationMarker = new GeolocationMarker(this.$refs.map.$mapObject)
+            this.geolocationMarker = new GeolocationMarker()
             this.geolocationMarker.setCircleOptions({
               fillColor: '#5385e8',
               strokeColor: '#0e3fa0'
             })
-          })
+            this.geolocationMarker.setMap(this.$refs.gmapHistory.$mapObject)
 
-          if (this.currentPosition._default) {
-            this.currentPosition = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            }
-            this.zoom = 15
-          }
-        })
+            const self = this
+            google.maps.event.addListenerOnce(self.geolocationMarker, 'position_changed', function () {
+              if (self.currentPosition._default) {
+                self.currentPosition = this.getPosition()
+                self.zoom = 15
+              }
+            })
+          })
+        }, 0) // magic happens here
       }
     },
 
     watch: {
       deviceId: function () {
-        this.getLatestLocation(true, true)
+        this.points = []
+        this.getRanges()
+      },
+
+      selectedRange: function (val) {
+        if (val === null) return
+
+        const [from, to] = this.selectedRange.split('>>>')
+        this.getHistory(from, to)
       }
     },
 
     beforeDestroy: function () {
       clearInterval(this.updateIntervalObj)
-      this.geolocationMarker.setMap(null)
+
+      if (this.geolocationMarker) {
+        this.geolocationMarker.setMap(null)
+        this.geolocationMarker = null
+      }
+
+      this.selectedRange = null
+      this.ranges = []
     }
   }
 </script>
 
 <style scoped>
   #rangeFormGroup {
-    width: 30%;
+    width: 20%;
     min-width: 256px;
   }
 
-  .history-map, #map {
+  .history-map, #gmapHistory {
     height: 100%;
-    margin: 0;
-    padding: 0;
+    margin-bottom: -35px;
+
+    display: flex;
+    flex-direction: column;
   }
 
   strong.info-label {
