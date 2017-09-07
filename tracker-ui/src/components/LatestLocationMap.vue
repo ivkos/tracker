@@ -15,22 +15,29 @@
         <br>
         <strong class="info-label">Време</strong>: {{carMarker.rawState.satelliteTime | moment('LLLL')}}
         <br><br>
+
         <strong class="info-label">Координати</strong>:
         {{carMarker.rawState.location.latitude.toFixed(6)}},
         {{carMarker.rawState.location.longitude.toFixed(6)}}
         <br>
-        <strong class="info-label">Височина</strong>:
-        {{carMarker.rawState.location.altitude.toFixed(2)}} m
-        <br>
+
+        <span v-if="carMarker.rawState.location.altitude">
+          <strong class="info-label">Височина</strong>:
+          {{carMarker.rawState.location.altitude.toFixed(2)}} m
+          <br>
+        </span>
+
         <strong class="info-label">Прецизност</strong>:
-        {{carMarker.rawState.satelliteCount}} sat.,
-        Lat±{{carMarker.rawState.errLat.toFixed(0)}} m,
-        Lon±{{carMarker.rawState.errLon.toFixed(0)}} m,
-        Alt±{{carMarker.rawState.errAlt.toFixed(0)}} m
+        <span>{{carMarker.rawState.satelliteCount}} sat.</span>
+        <span v-if="carMarker.rawState.errLat">Lat±{{carMarker.rawState.errLat.toFixed(0)}} m</span>
+        <span v-if="carMarker.rawState.errLon">Lon±{{carMarker.rawState.errLon.toFixed(0)}} m</span>
+        <span v-if="carMarker.rawState.errAlt">Alt±{{carMarker.rawState.errAlt.toFixed(0)}} m</span>
         <br><br>
+
         <strong class="info-label">Скорост</strong>:
         {{ (carMarker.rawState.speed * 3.6).toFixed(2) }} km/h
         <br>
+
         <strong class="info-label">Курс</strong>:
         {{ carMarker.rawState.course.toFixed(2) }}&deg;
       </gmap-info-window>

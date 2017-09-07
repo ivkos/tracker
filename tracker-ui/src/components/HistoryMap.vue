@@ -16,22 +16,29 @@
         <br>
         <strong class="info-label">Време</strong>: {{infoCtx.rawState.satelliteTime | moment('LLLL')}}
         <br><br>
+
         <strong class="info-label">Координати</strong>:
         {{infoCtx.rawState.location.latitude.toFixed(6)}},
         {{infoCtx.rawState.location.longitude.toFixed(6)}}
         <br>
-        <strong class="info-label">Височина</strong>:
-        {{infoCtx.rawState.location.altitude.toFixed(2)}} m
-        <br>
+
+        <span v-if="infoCtx.rawState.location.altitude">
+          <strong class="info-label">Височина</strong>:
+          {{infoCtx.rawState.location.altitude.toFixed(2)}} m
+          <br>
+        </span>
+
         <strong class="info-label">Прецизност</strong>:
-        {{infoCtx.rawState.satelliteCount}} sat.,
-        Lat±{{infoCtx.rawState.errLat.toFixed(0)}} m,
-        Lon±{{infoCtx.rawState.errLon.toFixed(0)}} m,
-        Alt±{{infoCtx.rawState.errAlt.toFixed(0)}} m
+        <span>{{infoCtx.rawState.satelliteCount}} sat.</span>
+        <span v-if="infoCtx.rawState.errLat">Lat±{{infoCtx.rawState.errLat.toFixed(0)}} m,</span>
+        <span v-if="infoCtx.rawState.errLon">Lon±{{infoCtx.rawState.errLon.toFixed(0)}} m,</span>
+        <span v-if="infoCtx.rawState.errAlt">Alt±{{infoCtx.rawState.errAlt.toFixed(0)}} m</span>
         <br><br>
+
         <strong class="info-label">Скорост</strong>:
         {{ (infoCtx.rawState.speed * 3.6).toFixed(2) }} km/h
         <br>
+
         <strong class="info-label">Курс</strong>:
         {{ infoCtx.rawState.course.toFixed(2) }}&deg;
       </gmap-info-window>
