@@ -4,8 +4,8 @@
       Следвай местоположението по картата
     </b-form-checkbox>
 
-    <gmap-map id="map"
-              ref="map"
+    <gmap-map id="gmapLocation"
+              ref="gmapLocation"
               :center="currentPosition"
               :zoom="zoom">
 
@@ -133,7 +133,7 @@
           }
 
           if (follow) {
-            this.$refs.map.panTo(this.currentPosition)
+            this.$refs.gmapLocation.panTo(this.currentPosition)
           }
         })
         .catch(err => {
@@ -144,25 +144,25 @@
 
     mounted: function () {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-          Vue.loadScript(
-            '/static/geolocation-marker.js')
+        setTimeout(() => {
+          Vue.loadScript('/static/geolocation-marker.js')
           .then(() => {
-            this.geolocationMarker = new GeolocationMarker(this.$refs.map.$mapObject)
+            this.geolocationMarker = new GeolocationMarker()
             this.geolocationMarker.setCircleOptions({
               fillColor: '#5385e8',
               strokeColor: '#0e3fa0'
             })
-          })
+            this.geolocationMarker.setMap(this.$refs.gmapLocation.$mapObject)
 
-          if (this.currentPosition._default) {
-            this.currentPosition = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            }
-            this.zoom = 15
-          }
-        })
+            const self = this
+            google.maps.event.addListenerOnce(self.geolocationMarker, 'position_changed', function () {
+              if (self.currentPosition._default) {
+                self.currentPosition = this.getPosition()
+                self.zoom = 15
+              }
+            })
+          })
+        }, 0) // magic happens here
       }
 
       this.getLatestLocation(true, true)
@@ -177,13 +177,16 @@
 
     beforeDestroy: function () {
       clearInterval(this.updateIntervalObj)
-      this.geolocationMarker.setMap(null)
+      if (this.geolocationMarker) {
+        this.geolocationMarker.setMap(null)
+        this.geolocationMarker = null
+      }
     }
   }
 </script>
 
 <style scoped>
-  .latest-location-map, #map {
+  .latest-location-map, #gmapLocation {
     height: 100%;
     margin-bottom: -35px;
 
