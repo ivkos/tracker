@@ -17,7 +17,7 @@
             </b-tab>
 
             <b-tab title="Настройки">
-              Tab Contents 2
+              <device-settings :device-id="$route.params.id"></device-settings>
             </b-tab>
 
           </b-tabs>
@@ -31,9 +31,11 @@
   import DeviceListGroup from '../../DeviceListGroup.vue'
   import LatestLocationMap from './tabs/LatestLocationMap.vue'
   import HistoryMap from './tabs/HistoryMap.vue'
+  import DeviceSettings from './tabs/DeviceSettings.vue'
 
   export default {
     components: {
+      DeviceSettings,
       HistoryMap,
       LatestLocationMap,
       DeviceListGroup
