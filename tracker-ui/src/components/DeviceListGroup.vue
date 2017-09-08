@@ -7,8 +7,8 @@
                          v-if="device.lastSeen"
       >
         <div class="d-flex w-100 justify-content-between">
-          <h6 v-if="concise" class="mb-1">{{device.name}}</h6>
-          <h5 v-else class="mb-1">{{device.name}}</h5>
+          <h6 v-if="concise" class="mb-1">{{device.name || 'Без име'}}</h6>
+          <h5 v-else class="mb-1">{{device.name || 'Без име'}}</h5>
 
           <small>
             <template v-if="!device.active">
