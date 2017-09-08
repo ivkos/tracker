@@ -78,7 +78,7 @@ class DeviceHistoryService
             .filter(Objects::nonNull)
             .collect(toList());
 
-      if (ranges.size() == 0) {
+      if (pivot[0] == null) {
          return Collections.emptyList();
       }
 
