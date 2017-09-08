@@ -3,8 +3,10 @@ package com.ivkos.tracker.api.spring;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.time.OffsetDateTime;
+import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.ResolverStyle;
 
 import static java.time.temporal.ChronoField.*;
 
@@ -20,7 +22,9 @@ public class OffsetDateTimeAttributeConverter implements AttributeConverter<Offs
          .appendValue(MINUTE_OF_HOUR, 2)
          .appendValue(SECOND_OF_MINUTE, 2)
          .appendOffset("+HHMM", "+0000")
-         .toFormatter();
+         .toFormatter()
+         .withResolverStyle(ResolverStyle.STRICT)
+         .withChronology(IsoChronology.INSTANCE);
 
    @Override
    public String convertToDatabaseColumn(OffsetDateTime attribute)
