@@ -11,8 +11,11 @@
           <h5 v-else class="mb-1">{{device.name}}</h5>
 
           <small>
-            <span class="d-none d-sm-inline" v-if="!concise" >активно</span>
-            <span :title="device.lastSeen | moment('LLLL')">{{device.lastSeen | moment("from") }}</span>
+            <template v-if="!device.active">
+              <span class="d-none d-sm-inline" v-if="!concise">активно</span>
+              <span :title="device.lastSeen | moment('LLLL')">{{device.lastSeen | moment("from") }}</span>
+            </template>
+            <span :class="device.active ? 'bullet-active' : 'bullet-inactive'">●</span>
           </small>
         </div>
 
@@ -30,6 +33,8 @@
 </template>
 
 <script>
+  import moment from 'moment'
+
   export default {
     name: 'device-list-group',
     props: ['concise'],
@@ -44,7 +49,10 @@
     methods: {
       getDevices: function () {
         this.$http.get('devices').then(res => {
-          this.devices = res.data
+          this.devices = res.data.map(d => {
+            d.active = moment(d.lastSeen).diff() >= -120 * 1000
+            return d
+          })
         })
       }
     },
@@ -59,3 +67,13 @@
     }
   }
 </script>
+
+<style scoped>
+  .bullet-active {
+    color: #00e234
+  }
+
+  .bullet-inactive {
+    color: #ff6060
+  }
+</style>
