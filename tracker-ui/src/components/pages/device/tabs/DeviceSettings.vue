@@ -188,8 +188,4 @@
   #device-settings {
     max-width: 512px;
   }
-
-  .form-group > select, input {
-    max-width: 156px;
-  }
 </style>
