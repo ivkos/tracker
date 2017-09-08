@@ -15,7 +15,7 @@ export default new Router({
 
     {
       path: '/device/:id',
-      name: 'Device',
+      name: 'device',
       component: Device
     }
   ]

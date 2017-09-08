@@ -1,7 +1,7 @@
 <template>
   <div class="device-list-group">
     <b-list-group ref="list-group">
-      <b-list-group-item :to="{ name: 'Device', params: { id: device.id }}"
+      <b-list-group-item :to="{ name: 'device', params: { id: device.id }}"
                          v-for="device in devices"
                          :key="device.id"
                          v-if="device.lastSeen"
