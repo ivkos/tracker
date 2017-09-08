@@ -1,6 +1,5 @@
 package com.ivkos.tracker.api.spring;
 
-import com.ivkos.tracker.core.constants.ApiHeaders;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
@@ -25,10 +24,6 @@ class WebMvcConfig extends WebMvcConfigurerAdapter
       registry.addMapping("/**")
             .allowedOrigins("*")
             .allowedMethods("*")
-            .allowedHeaders(
-                  ApiHeaders.DEVICE_ID,
-                  ApiHeaders.API_SECRET,
-                  ApiHeaders.HARDWARE_ID
-            );
+            .allowedHeaders("*");
    }
 }
