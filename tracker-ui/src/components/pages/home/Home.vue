@@ -15,7 +15,7 @@
 </template>
 
 <script>
-  import DeviceListGroup from './DeviceListGroup.vue'
+  import DeviceListGroup from '../../DeviceListGroup.vue'
 
   export default {
     components: {DeviceListGroup},

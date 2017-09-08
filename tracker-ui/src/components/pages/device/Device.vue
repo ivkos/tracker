@@ -28,9 +28,9 @@
 </template>
 
 <script>
-  import DeviceListGroup from './DeviceListGroup.vue'
-  import LatestLocationMap from './LatestLocationMap.vue'
-  import HistoryMap from './HistoryMap.vue'
+  import DeviceListGroup from '../../DeviceListGroup.vue'
+  import LatestLocationMap from './tabs/LatestLocationMap.vue'
+  import HistoryMap from './tabs/HistoryMap.vue'
 
   export default {
     components: {

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '../components/Home.vue'
-import Device from '../components/Device.vue'
+import Home from '../components/pages/home/Home.vue'
+import Device from '../components/pages/device/Device.vue'
 
 Vue.use(Router)
 
