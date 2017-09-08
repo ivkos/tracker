@@ -1,5 +1,5 @@
 <template>
-  <div class="device-choice">
+  <div class="home">
     <b-container>
       <b-jumbotron to="/"
                    bg-variant="dark" text-variant="light" border-variant="dark"
@@ -19,6 +19,6 @@
 
   export default {
     components: {DeviceListGroup},
-    name: 'device-choice'
+    name: 'home'
   }
 </script>
