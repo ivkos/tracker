@@ -4,22 +4,21 @@ import com.ivkos.tracker.core.models.device.Device;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 interface DeviceHistoryRepository extends JpaRepository<DeviceGpsState, UUID>
 {
-   List<DeviceGpsState> getAllByDeviceOrderByStateSatelliteTimeDesc(Device device);
-
-   Stream<DeviceGpsState> getAllByDeviceOrderByStateSatelliteTimeAsc(Device device);
-
-   List<DeviceGpsState> getAllByDeviceAndStateSatelliteTimeGreaterThanEqualAndStateSatelliteTimeLessThanEqual(
+   Stream<DeviceGpsState> findAllByDeviceAndStateSatelliteTimeGreaterThanEqualAndStateSatelliteTimeLessThanEqual(
          Device device,
          OffsetDateTime from,
          OffsetDateTime to
    );
+
+   Stream<DeviceGpsState> findAllByDeviceOrderByStateSatelliteTimeAsc(Device device);
+
+   Stream<DeviceGpsState> findAllByDeviceOrderByStateSatelliteTimeDesc(Device device);
 
    Optional<DeviceGpsState> findFirstByDeviceOrderByStateSatelliteTimeDesc(Device device);
 

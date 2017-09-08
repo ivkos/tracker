@@ -6,9 +6,9 @@ import com.ivkos.tracker.core.support.GpsStateComparator;
 import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.*;
@@ -28,10 +28,11 @@ class DeviceHistoryService
       this.repository = repository;
    }
 
+   @Transactional(readOnly = true)
    public List<GpsState> getHistoryByDevice(Device device)
    {
-      return repository.getAllByDeviceOrderByStateSatelliteTimeDesc(device)
-            .stream()
+      return repository.findAllByDeviceOrderByStateSatelliteTimeDesc(device)
+            .parallel()
             .map(DeviceGpsState::getState)
             .collect(toList());
    }
@@ -43,30 +44,19 @@ class DeviceHistoryService
             .getState();
    }
 
-   @Transactional
+   @Transactional(readOnly = true)
    public List<GpsStateRange> getHistoryRanges(Device device)
    {
       final GpsState[] pivot = { null };
 
-      List<GpsStateRange> ranges = repository.getAllByDeviceOrderByStateSatelliteTimeAsc(device)
+      List<GpsStateRange> ranges = repository.findAllByDeviceOrderByStateSatelliteTimeAsc(device)
             .map(DeviceGpsState::getState)
-            .map(new Function<GpsState, Pair<GpsState, GpsState>>()
-            {
-               GpsState prev;
-
-               @Override
-               public Pair<GpsState, GpsState> apply(GpsState state)
-               {
-                  Pair<GpsState, GpsState> pair = null;
-                  if (prev != null) pair = new Pair<>(prev, state);
-                  prev = state;
-                  return pair;
-               }
-            })
+            .sorted(GpsStateComparator.getInstance())
+            .map(new GpsStatePairFunction())
             .skip(1) // skip first null
-            .map(x -> {
-               GpsState first = x.getKey();
-               GpsState second = x.getValue();
+            .map(pair -> {
+               GpsState first = pair.getKey();
+               GpsState second = pair.getValue();
 
                if (pivot[0] == null) pivot[0] = first;
 
@@ -109,10 +99,12 @@ class DeviceHistoryService
             .getState();
    }
 
+   @Transactional(readOnly = true)
    public List<GpsState> getHistoryInRange(Device device, OffsetDateTime from, OffsetDateTime to)
    {
-      return repository.getAllByDeviceAndStateSatelliteTimeGreaterThanEqualAndStateSatelliteTimeLessThanEqual(
-            device, from, to).stream()
+      return repository
+            .findAllByDeviceAndStateSatelliteTimeGreaterThanEqualAndStateSatelliteTimeLessThanEqual(device, from, to)
+            .parallel()
             .map(DeviceGpsState::getState)
             .collect(toList());
    }
@@ -136,6 +128,20 @@ class DeviceHistoryService
       {
          this.from = from;
          this.to = to;
+      }
+   }
+
+   private static class GpsStatePairFunction implements Function<GpsState, Pair<GpsState, GpsState>>
+   {
+      GpsState prev;
+
+      @Override
+      public Pair<GpsState, GpsState> apply(GpsState state)
+      {
+         Pair<GpsState, GpsState> pair = null;
+         if (prev != null) pair = new Pair<>(prev, state);
+         prev = state;
+         return pair;
       }
    }
 }
