@@ -17,7 +17,7 @@
 
     <h5>Настройки и управление</h5>
     <form>
-      <p class="small text-muted text-justify">
+      <p class="small text-muted">
         <b-badge pill variant="secondary">i</b-badge>
         Настройките и действията по управление влизат в сила до 1 минута след прилагането им, ако устройството е активно.
         При рестартиране или изключване на устройството, потребителските настройки се заместват с препоръчителните им.
@@ -32,7 +32,7 @@
           </b-input-group-button>
         </b-input-group>
 
-        <b-form-text class="text-justify">
+        <b-form-text>
           <b-badge pill variant="secondary">i</b-badge>
           През колко време устройството да запазва информация
           за текущото си местоположение от GPS. Препоръчват се 10 секунди.
@@ -49,7 +49,7 @@
           </b-input-group-button>
         </b-input-group>
 
-        <b-form-text class="text-justify">
+        <b-form-text>
           <b-badge pill variant="secondary">i</b-badge>
           През колко време устройството да докладва събраната информация за местоположението си. Препоръчват се 2 минути.
         </b-form-text>
@@ -61,7 +61,7 @@
         <b-button variant="outline-warning" ref="rebootButton" @click="doReboot">Рестартиране</b-button>
         <b-button variant="outline-danger" ref="shutdownButton" @click="doShutdown">Изключване</b-button>
 
-        <b-form-text class="text-justify">
+        <b-form-text>
           <b-badge pill variant="warning">!</b-badge>
           Изключването на устройството не дава възможност то да бъде включено отдалечено. За да бъде включено
           отново, трябва захранването му да бъде моментно прекъснато и след това възстановено.
