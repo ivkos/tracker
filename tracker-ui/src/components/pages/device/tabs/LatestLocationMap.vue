@@ -3,6 +3,10 @@
     <b-form-checkbox v-model="followLocation">
       Следвай местоположението по картата
     </b-form-checkbox>
+    <p class="small text-muted">
+      <b-badge pill variant="secondary">i</b-badge>
+      Фокусира картата върху актуалното местоположение на автомобила.
+    </p>
 
     <gmap-map id="gmapLocation"
               ref="gmapLocation"
