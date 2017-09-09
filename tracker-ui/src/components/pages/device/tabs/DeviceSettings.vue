@@ -1,5 +1,14 @@
 <template>
   <div id="device-settings">
+    <div class="alert-modal">
+      <b-modal ok-only v-model="modalVisible"
+               id="alert-modal"
+               ref="alert-modal"
+               title="Заявката е приета">
+        Настройката или действието ще влезе в сила до 1 минута, ако устройството е активно.
+      </b-modal>
+    </div>
+
     <h5>Предпочитания</h5>
     <form>
       <b-form-group label="Име на устройството:">
@@ -98,7 +107,9 @@
         ],
 
         setDeviceNameButtonDisabled: false,
-        deviceName: undefined
+        deviceName: undefined,
+
+        modalVisible: false
       }
     },
 
@@ -128,6 +139,10 @@
           headers: {
             'X-Device-Id': this.deviceId
           }
+        })
+        .then(x => {
+          this.modalVisible = true
+          return x
         })
       },
 
