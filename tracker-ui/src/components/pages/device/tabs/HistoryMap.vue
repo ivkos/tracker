@@ -166,7 +166,7 @@
           this.points = res.data.map(state => ({
             lat: state.location.latitude,
             lng: state.location.longitude,
-            accuracy: Math.max(state.errLat, state.errLon),
+            accuracy:  (2 * state.errLat + state.errLon) / 3,
             rawState: state
           }))
 

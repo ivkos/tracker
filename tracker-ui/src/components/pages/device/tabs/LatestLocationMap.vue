@@ -133,7 +133,7 @@
               lng: state.location.longitude
             },
             course: state.course,
-            accuracy: Math.max(state.errLat, state.errLon),
+            accuracy: (2 * state.errLat + state.errLon) / 3,
             rawState: state
           }
 
