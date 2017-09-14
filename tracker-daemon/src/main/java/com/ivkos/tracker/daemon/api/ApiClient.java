@@ -6,7 +6,6 @@ import com.ivkos.tracker.core.constants.ApiHeaders;
 import com.ivkos.tracker.core.models.command.Command;
 import com.ivkos.tracker.core.models.device.Device;
 import com.ivkos.tracker.core.models.gps.GpsState;
-import com.ivkos.tracker.daemon.gps.GpsStateHistoryHolder;
 import com.ivkos.tracker.daemon.support.DeviceDefinitionManager;
 import com.ivkos.tracker.daemon.support.logging.InjectLogger;
 import io.vertx.core.AsyncResult;
@@ -27,18 +26,15 @@ public class ApiClient
 {
    private final WebClient client;
    private final DeviceDefinitionManager deviceDefinitionManager;
-   private final GpsStateHistoryHolder historyHolder;
 
    @InjectLogger
    private Logger logger;
 
    @Inject
-   public ApiClient(WebClient client, DeviceDefinitionManager deviceDefinitionManager, GpsStateHistoryHolder
-         historyHolder)
+   public ApiClient(WebClient client, DeviceDefinitionManager deviceDefinitionManager)
    {
       this.client = client;
       this.deviceDefinitionManager = deviceDefinitionManager;
-      this.historyHolder = historyHolder;
    }
 
    public void sendHistory(Collection<GpsState> history, Handler<AsyncResult<HttpResponse<JsonObject>>> handler)
