@@ -242,7 +242,7 @@
 <style scoped>
   #rangeFormGroup {
     width: 20%;
-    min-width: 256px;
+    min-width: 337px;
   }
 
   .history-map, #gmapHistory {
